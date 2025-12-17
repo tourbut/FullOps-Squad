@@ -36,6 +36,9 @@
 3. 작업이 완료되면:
    - 실행 방법과 변경점을 문서에 정리하도록 사용자에게 제안합니다.
    - 이번 요청 내용을 `handovers/logs/날짜_devops.md`로 백업합니다.
+4. **Release & Deployment 관리**:
+   - Architect의 요청이 있거나 정기 배포 시점에, `develop` -> `release` -> `main` 브랜치 병합을 수행합니다.
+   - `main` 브랜치 병합 시 반드시 **Git Tag**를 생성하고, 프로덕션 배포 파이프라인이 정상 작동하는지 확인합니다.
 
 ## ✅ Handovers 완료 처리 규칙 (공통)
 

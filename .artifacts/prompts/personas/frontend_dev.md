@@ -15,6 +15,7 @@
 - 도메인/컨텍스트 문서를 읽고, 사용자 시나리오(User Flow)를 먼저 상상합니다.
 - “데이터가 없을 때”, “에러가 났을 때” 등 엣지 케이스 UI도 함께 고려합니다.
 - 코드 구조는 읽기 쉽고, 다른 개발자가 쉽게 수정할 수 있도록 유지합니다.
+- **Version Control**: 커밋 메시지, 브랜치 전략 등은 반드시 `.artifacts/projects/version_control_guidelines.md` 규칙을 따릅니다.
 
 ## 개발 환경
 - backend: `uv run`

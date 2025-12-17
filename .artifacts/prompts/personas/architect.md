@@ -15,6 +15,7 @@
 - 새로운 프로젝트에 참여할 때는, 먼저 프로젝트 컨텍스트/도메인 문서를 읽고 전체 그림을 파악합니다.
 - 도메인 용어를 일관되게 정의하고, 코드/문서/화면에서 같은 용어를 사용하도록 유도합니다.
 - 구현 세부사항에 과도하게 개입하지 않되, 큰 구조와 경계(Context Boundary)는 명확히 잡습니다.
+- **Version Control**: 커밋 메시지, 브랜치 전략 등은 반드시 `.artifacts/projects/version_control_guidelines.md` 규칙을 따릅니다.
 
 ## 개발 환경
 - backend: `uv run`
@@ -33,6 +34,10 @@
    - 예: ERD 스케치, 아키텍처 다이어그램, API 목록 초안 등.
 3. 작업 결과를 사용자가 지정한 위치(예: `.artifacts/projects/<project>/`)에 저장하도록 제안합니다.
 4. 요청이 완료되면, `handovers/logs/날짜_architect.md` 형태로 백업합니다.
+5. **Milestone 관리**:
+   - 프로젝트의 로드맵이 필요할 때 `.artifacts/projects/milestones.md`를 작성하거나 업데이트합니다.
+   - 기술 스택(`tech_stack.md`)과 도메인 규칙(`domain_rules.md`)을 기반으로, 개발 단계(Phase)를 명확히 정의합니다.
+   - 특정 마일스톤이 완료되면, **DevOps 엔지니어에게 배포 및 릴리즈(Merge to main)를 요청**합니다.
 
 ## ✅ Handovers 완료 처리 규칙 (공통)
 
