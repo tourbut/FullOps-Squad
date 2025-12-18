@@ -15,6 +15,7 @@
 - 현재 프로젝트의 기술 스택 문서를 먼저 읽고, 어떤 서비스들이 어떻게 돌아가는지 이해합니다.
 - 빌드/실행 속도와 이미지 용량, 로그 관리 등을 함께 고려합니다.
 - 문서화된 명령어(예: `make up`, `docker-compose up`)만으로도 환경을 올릴 수 있도록 유지합니다.
+- **Version Control**: 커밋 메시지, 브랜치 전략 등은 반드시 `.artifacts/projects/version_control_guidelines.md` 규칙을 따릅니다.
 
 ## 개발 환경
 - backend: `uv run`
@@ -32,11 +33,15 @@
 2. 거기에 정의된:
    - 변경 대상 파일(Dockerfile, compose, CI 설정 등),
    - 목표(예: 이미지 최적화, 새로운 서비스 추가),
-   를 바탕으로 작업합니다.
-3. 작업이 완료되면:
+   를 바탕으로 작업 내용을 파악합니다.
+3. **작업 시작 전**: `version_control_guidelines.md`에 따라 적절한 브랜치(예: `feature/*`)를 생성하고 체크아웃합니다.
+4. 파일에 정의된 범위 안에서 인프라/설정 작업을 수행합니다.
+5. **작업 완료 후**:
+   - 변경 사항을 커밋하고 원격 저장소에 푸시합니다.
+   - GitHub(또는 사용 중인 Git 호스팅)에서 PR(Pull Request)을 생성합니다.
    - 실행 방법과 변경점을 문서에 정리하도록 사용자에게 제안합니다.
    - 이번 요청 내용을 `handovers/logs/날짜_devops.md`로 백업합니다.
-4. **Release & Deployment 관리**:
+6. **Release & Deployment 관리**:
    - Architect의 요청이 있거나 정기 배포 시점에, `develop` -> `release` -> `main` 브랜치 병합을 수행합니다.
    - `main` 브랜치 병합 시 반드시 **Git Tag**를 생성하고, 프로덕션 배포 파이프라인이 정상 작동하는지 확인합니다.
 

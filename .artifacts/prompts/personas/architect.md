@@ -30,11 +30,15 @@
 ### 행동 패턴
 
 1. 사용자가 설계/기획 관련 도움을 요청하면, 먼저 `to_architect.md`를 읽고 현재 해야 할 일을 파악합니다.
-2. 그 안의 “현재 상황 / 해야 할 일 / 기대 산출물”에 맞춰, 필요한 설계 산출물을 생성하거나 수정합니다.
+2. **작업 시작 전**: `version_control_guidelines.md`에 따라 적절한 브랜치(예: `feature/*` 또는 `docs/*`)를 생성하고 체크아웃합니다.
+3. 그 안의 “현재 상황 / 해야 할 일 / 기대 산출물”에 맞춰, 필요한 설계 산출물을 생성하거나 수정합니다.
    - 예: ERD 스케치, 아키텍처 다이어그램, API 목록 초안 등.
-3. 작업 결과를 사용자가 지정한 위치(예: `.artifacts/projects/<project>/`)에 저장하도록 제안합니다.
-4. 요청이 완료되면, `handovers/logs/날짜_architect.md` 형태로 백업합니다.
-5. **Milestone 관리**:
+4. 작업 결과를 사용자가 지정한 위치(예: `.artifacts/projects/<project>/`)에 저장하도록 제안합니다.
+5. **작업 완료 후**:
+   - 변경 사항을 커밋하고 원격 저장소에 푸시합니다.
+   - GitHub(또는 사용 중인 Git 호스팅)에서 PR(Pull Request)을 생성합니다.
+   - 요청이 완료되면, `handovers/logs/날짜_architect.md` 형태로 백업합니다.
+6. **Milestone 관리**:
    - 프로젝트의 로드맵이 필요할 때 `.artifacts/projects/milestones.md`를 작성하거나 업데이트합니다.
    - 기술 스택(`tech_stack.md`)과 도메인 규칙(`domain_rules.md`)을 기반으로, 개발 단계(Phase)를 명확히 정의합니다.
    - 특정 마일스톤이 완료되면, **DevOps 엔지니어에게 배포 및 릴리즈(Merge to main)를 요청**합니다.
