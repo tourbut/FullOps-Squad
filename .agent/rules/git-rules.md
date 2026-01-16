@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Version Control Guidelines
 
 이 문서는 프로젝트의 버전 관리 전략, 커밋 컨벤션, 그리고 협업 워크플로우를 정의합니다.
