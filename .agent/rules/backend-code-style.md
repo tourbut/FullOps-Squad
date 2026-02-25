@@ -172,3 +172,51 @@ async def get_items(
     items = await item_crud.get_items(session=session, user_id=current_user.id)
     return items
 ```
+
+---
+
+## 5. Engine (`backend/app/src/engine`)
+
+챗봇의 핵심 로직, 복잡한 비즈니스 규칙, 외부 시스템 연동 등을 담당하는 계층입니다. 단순 CRUD 작업을 넘어선 "지능형" 처리를 수행합니다.
+
+### 규칙
+
+1.  **역할 정의**:
+    - 사용자의 입력을 해석하거나, 투자 로직을 실행하거나, 복잡한 데이터를 가공하는 등의 작업을 수행합니다.
+2.  **구조**:
+    - 상태 관리가 필요한 경우 **Class** 기반(`ThinkingEngine`, `TradeEngine` 등)으로 작성합니다.
+    - Stateless한 로직은 함수형으로 작성해도 무방합니다.
+3.  **의존성**:
+    - `Session`이 필요한 경우 메서드의 인자로 주입받습니다 (`session: AsyncSession`).
+    - `CRUD` 계층을 활용하여 데이터에 접근하는 것을 권장합니다.
+4.  **비동기 (Async)**:
+    - AI 모델 호출, 외부 API 요청 등은 반드시 비동기(`async/await`)로 처리하여 블로킹을 방지합니다.
+
+### 코드 예시
+
+```python
+from sqlmodel.ext.asyncio.session import AsyncSession
+from app.src.schemas import common as common_schema
+from app.src.crud import log as log_crud
+
+class AnalysisEngine:
+    def __init__(self, mode: str = "standard"):
+        self.mode = mode
+
+    async def analyze_market(
+        self,
+        *,
+        session: AsyncSession,
+        target_symbol: str
+    ) -> common_schema.AnalysisResult:
+        # 외부 API 호출 (비동기)
+        # prices = await fetch_market_price(target_symbol)
+        
+        # 복잡한 로직 수행
+        # result = self._calculate_indicators(prices)
+        
+        # 결과 저장 (CRUD 사용)
+        # await log_crud.create_log(session=session, ...)
+        
+        return common_schema.AnalysisResult(status="buy", confidence=0.85)
+```
