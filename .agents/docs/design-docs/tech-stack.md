@@ -1,5 +1,7 @@
 # Tech Stack
 
+<!-- AI Harness Rule: This file defines the explicit technologies, package managers, and directories employed in this project. All architectural dependencies and scripts must strictly conform to these tools. -->
+
 ## Backend
 
 - **Language:** Python 3.13 (latest)
@@ -12,7 +14,7 @@
   - uvicorn (ASGI 서버)
 
 ### Backend Structure
-```
+```text
 backend
 ├── Dockerfile                  # 백엔드 컨테이너 빌드 설정
 ├── alembic.ini                 # Alembic DB 마이그레이션 설정

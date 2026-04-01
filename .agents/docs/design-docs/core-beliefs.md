@@ -1,5 +1,7 @@
 # 핵심 기술 신념 (Core Beliefs)
 
+<!-- AI Harness Rule: Write down the non-negotiable operational principles in bullet points when building the system (e.g., agent-first readability). -->
+
 우리가 기술적인 결정을 내릴 때 기준으로 삼아야 할 신념들입니다.
 
 1. **가독성(Readability) > 작성 편의성(Writability)**

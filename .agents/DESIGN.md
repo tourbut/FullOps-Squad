@@ -1,7 +1,8 @@
+<!-- AI Harness Rule: Read DESIGN.md purely as high-level architectural constraints (YAGNI, Predictability, Clarity). DO NOT write specific features or implementation details here; they belong in `.agents/docs/design-docs/`. Any UI/UX changes must align with `.agents/docs/design-docs/ui-ux-guidelines.md`. -->
 # 디자인 철학 및 원칙 (Design Philosophy)
 
 이 문서는 프로젝트 개발 시 준수해야 할 높은 수준의 디자인 철학을 안내합니다. 
-구체적인 기능명세 및 설계는 `docs/design-docs/` 디렉토리에 위치시킵니다.
+구체적인 기능명세 및 설계는 `.agents/docs/design-docs/` 디렉토리에 위치시킵니다.
 
 ## 1. 핵심 방향 (Core Beliefs)
 - **명확성(Clarity)**: 코드는 작성하기보다 읽기 쉬워야 합니다.
@@ -17,4 +18,4 @@
 
 ## 3. UI/UX 디자인 원칙
 - (사용자 경험(UX) 및 인터페이스 디자인 시스템 원칙 작성)
-- `docs/references/design-system-reference-llms.txt` 문서를 참고하세요.
+- `.agents/docs/design-docs/ui-ux-guidelines.md` 문서를 참고하세요.

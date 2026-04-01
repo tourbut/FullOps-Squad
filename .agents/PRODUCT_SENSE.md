@@ -1,7 +1,8 @@
+<!-- AI Harness Rule: Read PRODUCT_SENSE.md to understand the user value and "Why" behind technical decisions. DO NOT put detailed product specs here. Detailed product specifications must ALWAYS be located in `.agents/docs/planning/product-specs/`. -->
 # 프로덕트 마인드셋 및 방향 (Product Sense)
 
 이 문서는 기술적 결정 이면에 있는 '왜(Why)'를 제공합니다. 사용자의 문제를 해결하는 제품을 만들기 위한 원칙들입니다.
-상세한 기능 스펙은 `docs/product-specs/` 디렉토리에 정의합니다.
+상세한 기능 스펙은 `.agents/docs/planning/product-specs/` 디렉토리에 정의합니다.
 
 ## 1. 핵심 타겟 유저
 - 시스템이 집중해야 할 대상 청중과 그들의 Pain Point를 정의합니다.

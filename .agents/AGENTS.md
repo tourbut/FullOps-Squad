@@ -1,37 +1,85 @@
-# `.agents` 사용 가이드 및 구조
+# AGENTS.md — Project Navigation Map
 
-본 문서는 하네스 엔지니어링 구조를 적용한 `FullOps-Squad/.agents` 환경의 메타 지식 저장소를 설명합니다. 
-AI 에이전트가 이 폴더의 내용을 참조하여 코드 작성, 기획, 테스트, 배포 등의 역할을 보다 체계적으로 수행할 수 있도록 돕습니다.
+<!-- AI Harness Rule: Create an index mapping of this repository within 100 lines. Exclude detailed technical implementations. Only guide the paths for the agent to navigate, for instance, pointing to ARCHITECTURE.md for architecture and rules/ for linter rules. -->
 
-## 기본 디렉토리 구조
-```text
-.agents/
-├── AGENTS.md             # 에이전트 시스템 가이드 (현재 문서)
-├── ARCHITECTURE.md       # 시스템 아키텍처 개요
-├── DESIGN.md             # 디자인 철학 및 원칙
-├── FRONTEND.md           # 프론트엔드 가이드
-├── PLANS.md              # 로드맵 및 실행 계획
-├── PRODUCT_SENSE.md      # 프로덕트 방향성
-├── QUALITY_SCORE.md      # 개발 품질 기준
-├── RELIABILITY.md        # 시스템 안정성
-├── SECURITY.md           # 보안 수칙
-│
-├── docs/                 # 기획, 설계, 자동 생성된 지식 저장소
-│   ├── design-docs/      # 기술 세부 설계 문서
-│   ├── exec-plans/       # 마일스톤, 진행 상황 및 기술 부채
-│   ├── generated/        # 자동 생성 문서 (DB 스키마 등)
-│   ├── product-specs/    # 제품 기능 스펙
-│   └── references/       # LLM 참조용 레퍼런스 링크/텍스트
-│
-├── contexts/             # 각 에이전트 역할별 컨텍스트
-├── handovers/            # 에이전트 작업 이관 규칙
-├── project/              # 프로젝트 메타 데이터 및 임시 아티팩트
-├── rules/                # 기술 스택별 코딩 스타일 및 기본 규칙
-├── skills/               # 개별 검증 스크립트 및 유지보수 스킬
-└── workflows/            # 복합 자동화 워크플로우
-```
+> This document serves as the **entry point** for agents to understand and navigate the project.
+> Specific technical details are delegated to their respective reference documents.
 
-## AI 에이전트 가이드 (How to use)
-- 새로운 기능을 구현할 땐, `docs/product-specs/`의 스펙 문서와 `ARCHITECTURE.md`, `DESIGN.md`를 우선 확인하세요.
-- 코드 작성 전에는 `rules/` 디렉토리와 `FRONTEND.md`(혹은 백엔드 가이드)를 읽고 코딩 스타일을 준수하세요.
-- 각 에이전트는 역할을 시작할 때 `contexts/`의 해당 역할 문서를 참조하고, 작업 완료 후 `handovers/`를 참고하여 로그를 남깁니다.
+---
+
+## Project Overview
+
+This repository is an **AI agent collaboration-based software development project**.
+Multiple role-based agents (Architect, Backend, Frontend, DevOps, QA) collaborate through documents,
+maintain their own contexts, and transfer tasks via handovers.
+
+---
+
+## Navigation Guide
+
+### Architecture & Structure
+- **Technical Design Philosophy** → `DESIGN.md`
+- **System Architecture & Dependency Rules** → `ARCHITECTURE.md`
+- **Tech Stack & Environment Setup** → `docs/design-docs/tech-stack.md`
+- **Overall Roadmap & Milestones** → `PLANS.md`
+
+### Quality Standards & Governance
+- **Overall Quality Scoring Criteria** → `QUALITY_SCORE.md`
+- **Frontend Quality Standards** → `FRONTEND.md`
+- **Backend Quality Standards** → `BACKEND.md`
+- **System Reliability & Devops Rules** → `RELIABILITY.md`
+- **Security Checklists & Constraints** → `SECURITY.md`
+
+### Agent Tools
+- **Skills & Tool Specifications** → `SKILLS.md`
+
+### Product Sense & Planning
+- **Product Mindset & Goal Alignment** → `PRODUCT_SENSE.md`
+- **Meeting Notes & Ideas** → `docs/planning/meeting-logs/`
+- **Problem Definitions (CPS)** → `docs/planning/cps/`
+- **Product Specifications** → `docs/planning/product-specs/`
+
+### Design Principles
+- **Core Operating Beliefs** → `docs/design-docs/core-beliefs.md`
+- **UI/UX Evaluation Criteria** → `docs/design-docs/ui-ux-guidelines.md`
+
+### Execution Plans
+- **Sprint Contracts** → `docs/exec-plans/sprint-contracts/`
+- **Active Tasks** → `docs/exec-plans/active/`
+- **Completed Tasks** → `docs/exec-plans/completed/`
+- **Technical Debt Tracking** → `docs/exec-plans/tech-debt-tracker.md`
+
+### Performance Evaluation
+- **Organization-Specific Quality Metrics** → `docs/evaluations/org-metrics.md`
+- **QA Bug Reports** → `docs/evaluations/qa-reports/`
+
+### Auto-Generated & References
+- **Auto-Generated Files (DB Schema, etc.)** → `docs/generated/`
+- **External Reference Materials (Design System, etc.)** → `docs/references/`
+
+### Mechanical Controls
+- **Linter Rules** → `rules/linter-rules.md`
+- **Linter Violation Correction Guides** → `rules/correction-guides.md`
+
+### Agent Work Context
+- **Role-Specific Contexts (Knowledge)** → `contexts/`
+- **Task Handover Documents** → `handovers/`
+
+### Ecosystem Management
+- **Agent Skill Implementations** → `skills/`
+- **Workflows (Slash Commands)** → `workflows/`
+
+---
+
+## Agent Behavior Rules (Summary)
+
+1. **Before starting work**: Always read this document first, then explore relevant paths.
+2. **No architecture violations**: Never violate the dependency directions in `ARCHITECTURE.md`.
+3. **Follow linter rules**: Always comply with the mechanical constraints in `rules/linter-rules.md`.
+4. **Maintain context**: Update your file in `contexts/` after completing work.
+5. **Record handovers**: Leave records in `handovers/` when transferring tasks.
+
+---
+
+> **Note**: This document is a concise map of under 100 lines.
+> Refer to linked documents for details on each item.

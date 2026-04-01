@@ -1,15 +1,100 @@
-# 프로젝트 계획 및 로드맵 (Plans)
+# PLANS.md — Project Roadmap & Milestones
 
-이 문서는 FullOps-Squad 프로젝트의 마일스톤과 향후 계획을 요약합니다.
-세부적인 실행 계획이나 현재 완료된/진행 중인 태스크는 `docs/exec-plans/` 디렉토리를 참조하세요.
+<!-- AI Harness Rule: Summarize the macroscopic goals and milestones the project aims to achieve, either chronologically or by phases. -->
 
-## 1. 단기 목표 (Short-term Goals)
-- [ ] 구체적인 단기 목표 항목 1
-- [ ] 구체적인 단기 목표 항목 2 (예: 초기 하네스 구동, CI/CD 구축)
+> Summarizes the macro-level goals and milestones the project aims to achieve in chronological/phase order.
+> Detailed execution plans for each phase are managed in `docs/exec-plans/` subdocuments.
 
-## 2. 장기 로드맵 (Long-term Roadmap)
-- 분기별(또는 월별) 로드맵 초안 작성
+---
 
-## 3. 버저닝 및 릴리스 전략
-- 버전 관리 정책 (`rules/git-rules.md` 참고)
-- 릴리스 노트 작성 원칙 등 기술
+## Project Vision
+
+Build a development system where AI agents **autonomously collaborate through documents**,
+producing software of **consistent quality** with minimal human intervention.
+
+---
+
+## Phase 1: Foundation
+
+**Goal**: Establish project structure, agent conventions, and basic infrastructure
+
+- [ ] Create `.agents/` directory structure and all convention documents
+- [ ] Define role-based agent personas (Architect, Backend, Frontend, DevOps, QA)
+- [ ] Establish linter rules and auto-correction guides
+- [ ] Configure development environment Docker Compose
+- [ ] Set up initial CI/CD pipeline
+
+**Completion Criteria**: Agents can read documents and begin work independently
+
+---
+
+## Phase 2: Core Domain Implementation
+
+**Goal**: Build core business logic and data models
+
+- [ ] Design domain models and finalize DB schema
+- [ ] Implement core API endpoints (CRUD + business logic)
+- [ ] Implement frontend base layout and key screens
+- [ ] Achieve unit test coverage of 80% or above
+- [ ] Auto-generate API documentation (OpenAPI/Swagger)
+
+**Completion Criteria**: Core use cases work end-to-end
+
+---
+
+## Phase 3: Agent Autonomy
+
+**Goal**: Stabilize inter-agent handover and autonomous execution systems
+
+- [ ] Automate coordinator agent task distribution
+- [ ] Validate creator-evaluator workflow based on sprint contracts
+- [ ] Build QA agent's Playwright-based automated testing system
+- [ ] Set up technical debt auto-detection and refactoring pipeline
+- [ ] Stabilize context file auto-update workflows
+
+**Completion Criteria**: Agents can autonomously complete 1 sprint without human intervention
+
+---
+
+## Phase 4: Quality Hardening
+
+**Goal**: Achieve production-level stability and performance
+
+- [ ] Load testing and performance optimization
+- [ ] Security audit and vulnerability patching
+- [ ] Build monitoring & alerting system
+- [ ] UX improvements based on user feedback
+- [ ] Achieve 90%+ compliance with org-specific quality metrics (`org-metrics.md`)
+
+**Completion Criteria**: Ready for production deployment
+
+---
+
+## Phase 5: Scale & Operate
+
+**Goal**: Ensure sustainable operations and scalability
+
+- [ ] Generalize agent structure for multi-project support
+- [ ] Standardize agent onboarding process for new domains/features
+- [ ] Build operations dashboard and metrics visualization
+- [ ] Establish automated document sync system (code changes → document sync)
+- [ ] Write guides for team or community sharing
+
+**Completion Criteria**: This system can be applied to a new project within 1 day
+
+---
+
+## Milestone Timeline (Example)
+
+| Phase | Estimated Duration | Status |
+|-------|-------------------|--------|
+| Phase 1: Foundation | 2 weeks | 🔄 In Progress |
+| Phase 2: Core Domain | 4 weeks | ⏳ Pending |
+| Phase 3: Agent Autonomy | 3 weeks | ⏳ Pending |
+| Phase 4: Quality Hardening | 3 weeks | ⏳ Pending |
+| Phase 5: Scale & Operate | Ongoing | ⏳ Pending |
+
+---
+
+> **Note**: Detailed tasks and decision logs for each Phase are managed
+> in `docs/exec-plans/active/` and `docs/exec-plans/completed/`.

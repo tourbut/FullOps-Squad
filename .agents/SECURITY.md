@@ -1,3 +1,4 @@
+<!-- AI Harness Rule: Read SECURITY.md for non-negotiable security requirements (Secrets, OWASP constraints). Any new infrastructure or API additions MUST be validated against these checkpoints before reaching `main`. -->
 # 보안 수칙 및 체크리스트 (Security)
 
 이 문서는 프로젝트 개발 시 준수해야 할 최소한의 보안 요구사항을 정의합니다.

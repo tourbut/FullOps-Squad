@@ -1,7 +1,8 @@
+<!-- AI Harness Rule: Read RELIABILITY.md for system resilience, monitoring, and incident response guidelines. This file defines mandatory reliability standards. For detailed deployment steps, always consult `.agents/rules/devops.md`. Ensure all errors are trackable. -->
 # 시스템 안정성 (Reliability)
 
-프로덕션 환경에서 발생할 수 있는 장애를 최소화하고, 신속하게 복구하기 위한 गाइड라인입니다.
-데브옵스(DevOps) 파이프라인 및 운영 규칙은 `rules/devops.md`를 참고하세요.
+프로덕션 환경에서 발생할 수 있는 장애를 최소화하고, 신속하게 복구하기 위한 가이드라인입니다.
+데브옵스(DevOps) 파이프라인 및 운영 규칙은 `.agents/rules/devops.md`를 참고하세요.
 
 ## 1. 장애 대비 및 복원력 (Resilience)
 - 모든 외부 서비스 콜에는 타임아웃과 재시도 로직이 포함되어야 합니다.

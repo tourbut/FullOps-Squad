@@ -1,5 +1,7 @@
 # 기술 부채 추적기 (Tech Debt Tracker)
 
+<!-- AI Harness Rule: Maintain a list of known technical debts and areas where code consistency is broken, so that a background agent can refactor them periodically. -->
+
 당장의 기능 출시를 위해 타협한 코드나 시스템 구조(AHA)를 기록해 두고 향후 리팩토링할 시점을 관리합니다.
 
 | 일자 | 부문(컴포넌트) | 상세 내용 | 임팩트 | 담당자/에이전트 | 해결 여부 |
