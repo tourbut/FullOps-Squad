@@ -70,6 +70,20 @@ src/
 └── ui/             # Layer 6: Frontend components, pages
 ```
 
+### Actual Project Mapping
+
+> 위의 추상 구조가 실제 프로젝트에서 어떻게 매핑되는지 보여줍니다.
+> 상세 파일 구조는 `docs/design-docs/tech-stack.md`를 참조하세요.
+
+| Layer | Abstract | Backend Actual | Frontend Actual |
+|-------|----------|---------------|----------------|
+| Types (L1) | `types/` | `app/models/` | `lib/types/` |
+| Config (L2) | `config/` | `app/core/` | `lib/stores/` (설정 관련) |
+| Repository (L3) | `repositories/` | `app/src/crud/` | `lib/` (API client) |
+| Service (L4) | `services/` | `app/src/engine/` | `lib/` (비즈니스 로직) |
+| Runtime (L5) | `runtime/` | `app/main.py`, `app/src/routes/` | `routes/` |
+| UI (L6) | `ui/` | — | `routes/`, `lib/components/` |
+
 ---
 
 ## Inter-Package Boundary Rules

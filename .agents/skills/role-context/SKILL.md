@@ -34,4 +34,4 @@ description: 에이전트의 지식 관리 및 활용을 설명합니다. 작업
 
 | File | Purpose |
 |------|---------|
-| `.agent/contexts/*.md` | 역할(Role)별 누적된 개발 지식 및 맥락 보관 |
+| `.agents/contexts/*.md` | 역할(Role)별 누적된 개발 지식 및 맥락 보관 |

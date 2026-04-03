@@ -115,10 +115,10 @@ Separate each group with 1 blank line and sort alphabetically within each group.
 ```
 Convert the relative path import to an absolute path.
 - Current: from ..models import User
-- Fix: from src.types.user import User
+- Fix: from app.types.user import User
 
-Use absolute paths starting from the project root (src/).
-In the uv run environment, src is automatically included in PYTHONPATH.
+Use absolute paths starting from the project root (app/).
+In the uv run environment, app is automatically included in PYTHONPATH.
 ```
 
 ### IMP-003: Unused import (Dead Import)
@@ -226,7 +226,7 @@ Add type hints to function parameters and return values.
 - Current: def get_user(user_id):
 - Fix: def get_user(user_id: int) -> User | None:
 
-For complex types, define custom types in the src/types/ directory.
+For complex types, define custom types in the app/models/ directory.
 ```
 
 ### STYLE-003: Missing docstring/JSDoc

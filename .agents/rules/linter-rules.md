@@ -52,15 +52,15 @@ from fastapi import FastAPI
 from sqlalchemy import Column
 
 # 3. Local Modules — absolute paths only
-from src.config.settings import Settings
-from src.services.auth_service import AuthService
+from app.core.config import Settings
+from app.services.auth_service import AuthService
 ```
 
 **Rules**:
 - Each group separated by **1 blank line**
 - Sorted **alphabetically** within each group
 - `from` imports and simple `import` statements are separated, with `import` first within the same group
-- **Relative path imports forbidden**: `from ..models import User` ❌ → `from src.types.user import User` ✅
+- **Relative path imports forbidden**: `from ..models import User` ❌ → `from app.types.user import User` ✅
 
 ### 2.2 TypeScript / JavaScript (Frontend)
 ```typescript

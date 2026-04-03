@@ -11,10 +11,10 @@
 
 | Item | Choice | Notes |
 |------|--------|-------|
-| Framework | Svelte / SvelteKit | Reactive-first |
+| Framework | Svelte 5 / SvelteKit | Runes 문법 기반 반응형 시스템 |
 | Language | TypeScript (strict mode) | `any` type usage forbidden |
 | Styling | Tailwind CSS | Minimize inline style attributes |
-| UI Library | Flowbite (Tailwind-based) | Prefer custom components; use Flowbite as needed |
+| UI Library | Flowbite-Svelte (v2+) | Tailwind 기반; 필요 시 커스텀 컴포넌트 우선 |
 | Serving | nginx (reverse proxy) | Static file optimization |
 
 ---
@@ -38,10 +38,11 @@ src/
 ### Component Writing Rules
 
 1. **Single Responsibility**: Each component performs only one role
-2. **Explicit Props Types**: TypeScript type definitions required for all component props
-3. **Event Delegation**: Custom events are delegated upward via `createEventDispatcher`
+2. **Explicit Props Types**: `$props()` 로 타입 정의된 props 사용 (Svelte 5 Runes)
+3. **Callback Props**: 부모-자식 통신은 callback props 방식을 사용 (Svelte 5에서 `createEventDispatcher` 사용 금지)
 4. **No Direct Store Access**: Only page (route) level may access stores; components receive data via props
 5. **File Size Limit**: A single `.svelte` file must stay under **200 lines**
+6. **Runes Only**: `$state`, `$derived`, `$props`, `$effect` 사용 필수. 레거시 문법(`export let`, `$:`) 사용 금지
 
 ---
 
@@ -98,7 +99,7 @@ src/
 | Lighthouse Performance | ≥ 80 | Chrome DevTools |
 | First Contentful Paint | ≤ 1.5s | Lighthouse |
 | Cumulative Layout Shift | ≤ 0.1 | Lighthouse |
-| Initial Bundle Size (gzip) | ≤ 300KB | webpack-bundle-analyzer |
+| Initial Bundle Size (gzip) | ≤ 300KB | vite-bundle-visualizer |
 | Image Optimization | Use WebP/AVIF | Build pipeline |
 
 ---

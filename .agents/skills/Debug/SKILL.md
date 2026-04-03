@@ -23,7 +23,7 @@ description: 디버깅을 위한 서버 구동 스크립트입니다. "디버깅
 - **Run v0.9.0 Data Migration**:
   ```bash
   cd backend
-  uv run uvicorn app.main:app --reload| tee .agent/project/logs/backend.log
+  uv run uvicorn app.main:app --reload
   ```
 - **Generate QA Dirty Data (Legacy Simulation)**:
   ```bash
@@ -40,7 +40,7 @@ description: 디버깅을 위한 서버 구동 스크립트입니다. "디버깅
 - **Run Development Server**:
   ```bash
   cd frontend
-  npm run dev 2>&1| tee .agent/project/logs/frontend.log
+  npm run dev
   ```
 - **Run Type/Svelte Check**:
   ```bash
@@ -49,8 +49,8 @@ description: 디버깅을 위한 서버 구동 스크립트입니다. "디버깅
   ```
 
 ## Test User
-- ID: tester@example.com
-- PW: password123
+- 테스트 계정은 `.env` 파일의 `TEST_ID` / `TEST_PW` 환경 변수를 참조하세요.
+- `.env.example`에 키만 정의되어 있으며, 실제 값은 로컬 `.env`에서 관리합니다.
 
 ## Related Files
 

@@ -1,20 +1,70 @@
-<!-- AI Harness Rule: Read RELIABILITY.md for system resilience, monitoring, and incident response guidelines. This file defines mandatory reliability standards. For detailed deployment steps, always consult `.agents/rules/devops.md`. Ensure all errors are trackable. -->
+<!-- AI Harness Rule: Read RELIABILITY.md for system resilience, monitoring, and incident response guidelines. This file defines mandatory reliability standards. For detailed deployment steps, always consult `.agents/workflows/devops.md`. Ensure all errors are trackable. -->
 # 시스템 안정성 (Reliability)
 
 프로덕션 환경에서 발생할 수 있는 장애를 최소화하고, 신속하게 복구하기 위한 가이드라인입니다.
-데브옵스(DevOps) 파이프라인 및 운영 규칙은 `.agents/rules/devops.md`를 참고하세요.
+데브옵스(DevOps) 파이프라인 및 운영 규칙은 `.agents/workflows/devops.md`를 참고하세요.
 
 ## 1. 장애 대비 및 복원력 (Resilience)
-- 모든 외부 서비스 콜에는 타임아웃과 재시도 로직이 포함되어야 합니다.
-- Circuit Breaker 패턴 도입 검토
+
+### 필수 패턴
+- [ ] 모든 외부 서비스 콜에는 **타임아웃**(기본 10초)과 **재시도 로직**(최대 3회, 지수 백오프)이 포함되어야 합니다.
+- [ ] 외부 서비스 장애 시 **Circuit Breaker** 패턴으로 전체 시스템 영향을 차단합니다.
+- [ ] 데이터베이스 쓰기 작업은 반드시 **트랜잭션** 내에서 수행하며, 에러 시 **롤백** 처리합니다.
+- [ ] 백그라운드 작업(Celery)은 실패 시 **Dead Letter Queue**로 이동하여 데이터 유실을 방지합니다.
+
+### 설계 원칙
+- **Graceful Degradation**: 부분 장애 시에도 핵심 기능은 계속 제공
+- **Fail Fast**: 조기에 에러를 감지하여 리소스 낭비 방지
+- **Idempotency**: 재시도 시 부작용 없는 작업 설계
 
 ## 2. 모니터링 및 로깅
-- **로깅 규칙**: INFO, WARN, ERROR 레벨 분리. 중요한 비즈니스 로직에는 적절한 로깅 추가
-- 에러 발생 시 스택 트레이스 및 컨텍스트 정보를 포함할 것
+
+### 로깅 규칙
+| 레벨 | 용도 | 예시 |
+|------|------|------|
+| **DEBUG** | 개발 시 상세 추적 (프로덕션 비활성화) | 변수 값, 쿼리 상세 |
+| **INFO** | 정상적인 비즈니스 이벤트 | 사용자 로그인, API 호출 |
+| **WARNING** | 잠재적 문제, 정상 범위 내 이상 | 재시도 발생, 느린 쿼리 |
+| **ERROR** | 복구 가능한 오류 | API 실패, DB 연결 타임아웃 |
+| **CRITICAL** | 즉시 조치 필요한 장애 | 데이터 손상, 시스템 다운 |
+
+### 로깅 필수 사항
+- [ ] 에러 발생 시 **스택 트레이스** 및 **컨텍스트 정보**(요청 ID, 사용자 ID 등)를 포함할 것
+- [ ] **민감 정보**(비밀번호, 토큰 등)는 절대 로그에 기록하지 않을 것
+- [ ] 구조화된 로깅(`structlog` 또는 JSON 포맷) 사용 권장
+
+### 모니터링 항목
+- [ ] Health Check 엔드포인트 (`/health`) 구현
+- [ ] 메트릭 엔드포인트 구현 (선택: Prometheus 호환)
+- [ ] 주요 비즈니스 메트릭 대시보드 구성
 
 ## 3. 무중단 배포 및 백업 전략
-- 블루-그린 배포 등 무중단 배포 전략 설계
-- 주기적인 데이터베이스 자동 백업 및 복원 테스트
+
+### 배포 전략
+- [ ] **블루-그린** 또는 **롤링 업데이트** 배포 전략 적용
+- [ ] 배포 전 반드시 **롤백 계획** 수립
+- [ ] DB 마이그레이션은 **하위 호환** 방식으로 진행 (컬럼 삭제 시 2단계 배포)
+- [ ] 배포 후 5분 이내 기본 기능 확인 (Smoke Test)
+
+### 백업 전략
+- [ ] 데이터베이스 **자동 백업** (일 1회 이상)
+- [ ] 백업 **복원 테스트** 분기 1회 실행
+- [ ] 중요 설정 파일의 버전 관리
 
 ## 4. 장애 대응 프로세스 (Incident Response)
-- P1, P2 등급별 장애 정의 및 담당자 알림 체계 구축
+
+### 장애 등급 정의
+
+| 등급 | 정의 | 대응 시간 | 예시 |
+|------|------|-----------|------|
+| **P1** | 서비스 전체 중단 | 즉시 (15분 이내) | DB 다운, 메인 API 장애 |
+| **P2** | 주요 기능 장애 | 1시간 이내 | 인증 실패, 결제 불가 |
+| **P3** | 부분 기능 이상 | 4시간 이내 | 일부 페이지 렌더링 오류 |
+| **P4** | 경미한 이슈 | 다음 스프린트 | UI 깨짐, 로그 누락 |
+
+### 대응 절차
+1. **감지**: 모니터링 알림 또는 사용자 보고
+2. **분류**: 장애 등급 판정
+3. **대응**: 롤백 또는 핫픽스 적용
+4. **복구 확인**: Smoke Test 및 로그 확인
+5. **포스트모템**: 원인 분석 및 재발 방지 조치 기록 (`docs/evaluations/qa-reports/`)

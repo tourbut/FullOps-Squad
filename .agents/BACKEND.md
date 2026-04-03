@@ -12,7 +12,7 @@
 | Item | Choice | Notes |
 |------|--------|-------|
 | Framework | FastAPI | High-performance async API |
-| Language | Python 3.10+ | Strict type hints required (`typing`) |
+| Language | Python 3.13+ | Strict type hints required (`typing`) |
 | ORM | SQLModel / SQLAlchemy | Declarative models, Pydantic integration |
 | Database | PostgreSQL | Relational data standard |
 | Task Queue | Celery / Redis | Background processing |
@@ -24,15 +24,20 @@
 ### File Structure
 ```
 backend/
-├── api/             # API Routers (FastAPI endpoints)
-│   ├── v1/          # API versioning
-│   └── deps.py      # FastAPI Dependency Injection
-├── core/            # Config, security, and global settings
-├── crud/            # CRUD operations and database repositories
-├── models/          # Database models (SQLModel/SQLAlchemy)
-├── schemas/         # Pydantic schemas (Validation & Serialization)
-├── services/        # Core business logic
-└── tests/           # Pytest test suite
+├── app/                 # 메인 애플리케이션 코드
+│   ├── main.py          # FastAPI 앱 엔트리포인트 (앱 실행, 미들웨어)
+│   ├── core/            # 핵심 설정 및 유틸리티 (Config, Redis 등)
+│   ├── models/          # 데이터베이스 모델 (SQLModel)
+│   └── src/             # 비즈니스 로직 및 API 구현
+│       ├── api.py       # API 라우터 통합
+│       ├── routes/      # API 엔드포인트 핸들러
+│       ├── crud/        # 데이터베이스 CRUD 함수
+│       ├── schemas/     # Pydantic 데이터 검증 스키마
+│       ├── engine/      # 핵심 엔진 로직 (AI, 백그라운드 작업)
+│       ├── deps.py      # 의존성 주입 (DB 세션, 인증 등)
+│       └── utils/       # 기타 유틸리티 함수
+├── alembic/             # DB 마이그레이션 스크립트
+└── tests/               # Pytest 테스트 스위트
 ```
 
 ### Component Writing Rules

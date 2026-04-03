@@ -78,6 +78,7 @@ maintain their own contexts, and transfer tasks via handovers.
 3. **Follow linter rules**: Always comply with the mechanical constraints in `rules/linter-rules.md`.
 4. **Maintain context**: Update your file in `contexts/` after completing work.
 5. **Record handovers**: Leave records in `handovers/` when transferring tasks.
+6. **Language rule**: 모든 응답과 문서 작성은 **한국어**로 합니다. 코드 주석도 한국어로 작성합니다. (구조 문서의 영어 제목/키워드는 유지)
 
 ---
 

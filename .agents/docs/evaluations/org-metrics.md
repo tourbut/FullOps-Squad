@@ -2,4 +2,45 @@
 
 <!-- AI Harness Rule: Quantify and define metrics tailored to our organizational culture, moving beyond simple code quality (e.g., acceptable response latency, standard showing preference for no response over a false answer). -->
 
-> Defines organization specific quality-of-product and cultural metrics that all agents should adhere to beyond standard code quality.
+> 코드 품질을 넘어, 우리 조직의 문화와 제품에 특화된 품질 지표를 정의합니다.
+> 모든 에이전트는 표준 코드 품질 외에 이 기준도 준수해야 합니다.
+
+---
+
+## 1. 응답 품질 기준
+
+| 항목 | 기준 | 설명 |
+|------|------|------|
+| 정확성 우선 | 잘못된 응답보다 "모름" 선호 | 확실하지 않은 정보를 사실처럼 제시하지 않는다 |
+| 한국어 품질 | 자연스러운 한국어 표현 | 직역체 지양, 전문 용어는 영어 병기 허용 |
+| 컨텍스트 보존 | 이전 결정사항 존중 | contexts/ 파일에 기록된 결정을 무시하지 않는다 |
+
+---
+
+## 2. 응답 시간 허용치
+
+| 시나리오 | 허용 응답 시간 | 초과 시 조치 |
+|----------|---------------|-------------|
+| API 일반 조회 | ≤ 500ms (P95) | 쿼리 최적화 또는 캐싱 적용 |
+| API 목록 조회 (페이지네이션) | ≤ 1000ms (P95) | 인덱스 추가 또는 비동기 로딩 |
+| 대시보드 첫 페인트 | ≤ 2000ms | 스켈레톤 UI + 지연 로딩 적용 |
+| 백그라운드 작업 | ≤ 30s | 진행률 표시 + 완료 알림 |
+
+---
+
+## 3. 에이전트 작업 품질 기준
+
+| 항목 | 기준 | 측정 방법 |
+|------|------|-----------|
+| Handover 완전성 | 다음 역할이 추가 질의 없이 작업 시작 가능 | 수동 검토 |
+| 컨텍스트 업데이트율 | 작업 완료 시 100% 업데이트 | contexts/ 파일 변경 이력 |
+| 스프린트 목표 달성률 | ≥ 80% | exec-plans/sprint-contracts 대비 |
+| 기술 부채 증가율 | 스프린트당 ≤ 2건 신규 등록 | tech-debt-tracker.md 추적 |
+
+---
+
+## 4. 사용자 경험 기준
+
+- **온보딩 완료율**: 신규 유저의 핵심 대시보드 도달까지 1분 이내
+- **에러 복구율**: 에러 발생 후 사용자가 스스로 정상 흐름으로 복귀할 수 있는 비율 ≥ 90%
+- **접근성**: WCAG AA 레벨 준수 (FRONTEND.md의 a11y 체크리스트 참조)
