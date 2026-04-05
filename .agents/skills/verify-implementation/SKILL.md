@@ -31,6 +31,7 @@ argument-hint: "[선택사항: 특정 verify 스킬 이름]"
 |---|------|------|
 | 1 | `verify-backend-style` | 백엔드 코드 스타일 검증 (FastAPI + SQLModel) |
 | 2 | `verify-frontend-style` | 프론트엔드 API 호출 양식 검증 (Svelte + FastAPI Client) |
+| 3 | `verify-linter-rules` | linter-rules.md에 정의된 기계적 린터 규칙 검증 |
 
 <!-- 스킬이 추가되면 아래 형식으로 등록:
 | # | 스킬 | 설명 |
