@@ -1,0 +1,34 @@
+{
+  "_description": "자가 확장 린터 규칙 — 에이전트가 새로운 위반 패턴을 발견하면 이 파일에 규칙을 추가합니다",
+  "version": "1.0.0",
+  "last_updated": "2026-04-07",
+  "last_updated_by": "agent",
+  "rules": [
+    {
+      "code": "CUSTOM-001",
+      "description": "sleep() 사용 금지 (테스트에서 비결정적 대기)",
+      "pattern": "\\bsleep\\s*\\(",
+      "file_extensions": [".py", ".ts", ".js"],
+      "severity": "WARNING",
+      "suggestion": "명시적 대기 조건(await, polling, event)을 사용하세요",
+      "exclude_patterns": ["#.*sleep", "//.*sleep", "import.*sleep"],
+      "enabled": true
+    }
+  ],
+  "_rule_schema": {
+    "code": "CUSTOM-NNN (3자리 순번)",
+    "description": "규칙 설명 (한국어)",
+    "pattern": "정규식 패턴 (Python re 호환)",
+    "file_extensions": ["대상 확장자 목록, 빈 배열이면 전체 적용"],
+    "severity": "ERROR 또는 WARNING",
+    "suggestion": "수정 제안 메시지",
+    "exclude_patterns": ["제외할 정규식 패턴 목록"],
+    "enabled": "true/false로 규칙 활성화/비활성화"
+  },
+  "_protocol": {
+    "adding_rules": "새 규칙 추가 시: 1) rules 배열에 객체 추가 2) linter-rules.md에 규칙 추가 3) correction-guides.md에 수정 가이드 추가",
+    "disabling_rules": "규칙 비활성화: enabled를 false로 설정 (삭제하지 말 것)",
+    "naming": "code는 CUSTOM-NNN 형식, NNN은 001부터 순차 증가",
+    "testing": "추가 후 반드시 --list-rules로 로드 확인"
+  }
+}

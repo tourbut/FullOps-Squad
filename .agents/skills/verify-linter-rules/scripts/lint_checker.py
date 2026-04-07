@@ -5,11 +5,15 @@ lint_checker.py — linter-rules.md 기반 기계적 린터 규칙 검증 스크
 linter-rules.md에 정의된 규칙을 Python으로 직접 구현하여
 코드 위반을 자동으로 탐지합니다.
 
+에이전트가 custom_rules.json을 통해 규칙을 동적으로 추가/수정할 수 있는
+자가 확장(self-evolving) 아키텍처를 지원합니다.
+
 사용법:
     python lint_checker.py                           # 전체 검사
     python lint_checker.py backend/app/              # 특정 디렉토리
     python lint_checker.py --format json             # JSON 출력
     python lint_checker.py --format json backend/app/ # 조합
+    python lint_checker.py --list-rules              # 등록된 규칙 목록 출력
 """
 
 import ast
@@ -91,8 +95,52 @@ IMPORT_LAYER_MAP = {
     "app.main":        5,
 }
 
+# 프론트엔드 레이어 매핑 (ARCHITECTURE.md 기준)
+FRONTEND_LAYER_MAP = {
+    "lib/types":       1,   # Types (L1)
+    "lib/stores":      2,   # Config (L2)
+    "lib/utils":       2,   # Config (L2)
+    "lib/apis":        3,   # Repository (L3) — API client
+    "lib/services":    4,   # Service (L4)
+    "lib/components":  6,   # UI (L6)
+    "routes":          5,   # Runtime (L5) / UI (L6)
+}
+
+# 프론트엔드 임포트 레이어 매핑
+FRONTEND_IMPORT_LAYER_MAP = {
+    "$lib/types":      1,
+    "$lib/stores":     2,
+    "$lib/utils":      2,
+    "$lib/apis":       3,
+    "$lib/services":   4,
+    "$lib/components":  6,
+}
+
 # PascalCase가 허용되는 파일 확장자 (프레임워크 컨벤션)
 PASCAL_CASE_ALLOWED_EXTENSIONS = {".svelte"}
+
+# ──────────────────────────────────────────────
+# Svelte 전용 패턴 (SVELTE-xxx)
+# ──────────────────────────────────────────────
+
+# Svelte 5 레거시 문법 탐지 패턴
+SVELTE_LEGACY_EXPORT_LET = re.compile(r"^\s*export\s+let\s+")
+SVELTE_LEGACY_REACTIVE = re.compile(r"^\s*\$:\s+")
+SVELTE_LEGACY_DISPATCHER = re.compile(r"createEventDispatcher")
+SVELTE_LEGACY_STORE_SUBSCRIBE = re.compile(r"\$\w+\.subscribe\s*\(")
+
+# Svelte script 태그 검사
+SVELTE_SCRIPT_TAG = re.compile(r"<script\b[^>]*>")
+SVELTE_SCRIPT_LANG_TS = re.compile(r'<script\b[^>]*\blang\s*=\s*["\']ts["\'][^>]*>')
+
+# Svelte 인라인 스타일 검사
+SVELTE_INLINE_STYLE = re.compile(r'<[^>]+style\s*=\s*["\'][^"\']+["\'][^>]*>')
+
+# Svelte 직접 fetch 호출 검사
+SVELTE_DIRECT_FETCH = re.compile(r"\bfetch\s*\(")
+
+# 커스텀 규칙 파일 경로 (자가 확장 메커니즘)
+CUSTOM_RULES_FILENAME = "custom_rules.json"
 
 # Python 표준 라이브러리 최상위 모듈 (주요 항목)
 PYTHON_STDLIB_MODULES = {
@@ -268,11 +316,49 @@ def should_skip_file(filename: str) -> bool:
 # ──────────────────────────────────────────────
 
 class LintChecker:
-    """linter-rules.md 기반 기계적 린터 규칙 검사기"""
+    """linter-rules.md 기반 기계적 린터 규칙 검사기
+
+    자가 확장(self-evolving) 아키텍처:
+    - 내장 규칙: 이 클래스에 하드코딩된 검사 메서드
+    - 커스텀 규칙: custom_rules.json에서 동적 로드되는 정규식 기반 규칙
+    - 에이전트가 새 규칙을 발견하면 custom_rules.json에 추가하고
+      이 스크립트가 자동으로 해당 규칙을 적용합니다.
+    """
 
     def __init__(self, project_root: str = "."):
         self.project_root = Path(project_root).resolve()
         self.report = LintReport()
+        self.custom_rules = self._load_custom_rules()
+
+    def _load_custom_rules(self) -> list[dict]:
+        """커스텀 규칙을 custom_rules.json에서 동적 로드
+
+        에이전트가 새 패턴을 발견하면 이 파일에 규칙을 추가할 수 있습니다.
+        각 규칙은 다음 구조를 가져야 합니다:
+        {
+            "code": "CUSTOM-001",
+            "description": "규칙 설명",
+            "pattern": "정규식 패턴",
+            "file_extensions": [".py", ".ts"],
+            "severity": "ERROR",
+            "suggestion": "수정 제안",
+            "exclude_patterns": ["제외할 패턴"],
+            "enabled": true
+        }
+        """
+        rules_file = (
+            self.project_root / ".agents" / "skills"
+            / "verify-linter-rules" / CUSTOM_RULES_FILENAME
+        )
+        if not rules_file.exists():
+            return []
+
+        try:
+            with open(rules_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return [r for r in data.get("rules", []) if r.get("enabled", True)]
+        except (json.JSONDecodeError, KeyError):
+            return []
 
     # ────────────────────────────────────────
     # 1. 파일 네이밍 규칙 (FILE-xxx)
@@ -634,6 +720,191 @@ class LintChecker:
         return violations
 
     # ────────────────────────────────────────
+    # 4b. Svelte 전용 규칙 (SVELTE-xxx)
+    # ────────────────────────────────────────
+
+    def check_svelte_style(self, filepath: str) -> list[LintViolation]:
+        """Svelte 5 Runes 및 컴포넌트 규칙 검증"""
+        violations = []
+
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+                lines = content.splitlines()
+        except (UnicodeDecodeError, FileNotFoundError):
+            return violations
+
+        filename = Path(filepath).name
+        in_script_block = False
+        script_block_has_lang_ts = False
+        has_script_tag = False
+
+        # 전체 파일에서 script 태그 분석
+        for match in SVELTE_SCRIPT_TAG.finditer(content):
+            has_script_tag = True
+            if SVELTE_SCRIPT_LANG_TS.match(match.group()):
+                script_block_has_lang_ts = True
+
+        # SVELTE-001: <script lang="ts"> 미사용
+        if has_script_tag and not script_block_has_lang_ts:
+            violations.append(LintViolation(
+                code="SVELTE-001",
+                file=filepath,
+                line=None,
+                message='<script> 블록에 lang="ts"가 선언되지 않았습니다',
+                severity="ERROR",
+                suggestion='<script lang="ts">로 변경하세요',
+            ))
+
+        # 라인별 검사
+        for i, line in enumerate(lines, 1):
+            stripped = line.strip()
+
+            # script 블록 안인지 추적
+            if SVELTE_SCRIPT_TAG.search(line):
+                in_script_block = True
+            if "</script>" in line:
+                in_script_block = False
+                continue
+
+            if in_script_block:
+                # SVELTE-002: export let (레거시) 사용
+                if SVELTE_LEGACY_EXPORT_LET.search(line):
+                    violations.append(LintViolation(
+                        code="SVELTE-002",
+                        file=filepath,
+                        line=i,
+                        message="'export let' (Svelte 4 레거시) 사용 금지",
+                        severity="ERROR",
+                        suggestion="$props()를 사용하세요: let { prop } = $props();",
+                    ))
+
+                # SVELTE-003: $: 반응형 선언 (레거시) 사용
+                if SVELTE_LEGACY_REACTIVE.search(line):
+                    violations.append(LintViolation(
+                        code="SVELTE-003",
+                        file=filepath,
+                        line=i,
+                        message="'$:' (Svelte 4 레거시) 반응형 선언 사용 금지",
+                        severity="ERROR",
+                        suggestion="$derived() 또는 $effect()를 사용하세요",
+                    ))
+
+                # SVELTE-004: createEventDispatcher 사용
+                if SVELTE_LEGACY_DISPATCHER.search(line):
+                    violations.append(LintViolation(
+                        code="SVELTE-004",
+                        file=filepath,
+                        line=i,
+                        message="createEventDispatcher (Svelte 4 레거시) 사용 금지",
+                        severity="ERROR",
+                        suggestion="callback props 패턴을 사용하세요 (부모에서 함수를 props로 전달)",
+                    ))
+
+                # SVELTE-005: 직접 fetch() 호출 (api_router 미사용)
+                if SVELTE_DIRECT_FETCH.search(line):
+                    # fastapi.ts나 +server.ts 내부는 제외
+                    if not filepath.endswith((
+                        "fastapi.ts", "+server.ts", "+server.js",
+                        "api-client.ts", "api-client.js",
+                    )):
+                        violations.append(LintViolation(
+                            code="SVELTE-005",
+                            file=filepath,
+                            line=i,
+                            message="직접 fetch() 호출 금지: api_router 래퍼를 사용하세요",
+                            severity="ERROR",
+                            suggestion="$lib/fastapi의 api_router를 사용하세요",
+                        ))
+
+            # SVELTE-006: 인라인 CSS 사용 (script 밖에서도 검사)
+            if SVELTE_INLINE_STYLE.search(line):
+                violations.append(LintViolation(
+                    code="SVELTE-006",
+                    file=filepath,
+                    line=i,
+                    message="인라인 CSS (style=\"...\") 사용 금지",
+                    severity="WARNING",
+                    suggestion="Tailwind CSS 유틸리티 클래스를 사용하세요",
+                ))
+
+        # SVELTE-007: PascalCase 파일명 검증 (Svelte 컴포넌트)
+        stem = Path(filepath).stem
+        if not re.match(r"^[A-Z][a-zA-Z0-9]*$", stem):
+            # SvelteKit 라우팅 파일 (+page, +layout, +error, +server) 제외
+            if not stem.startswith("+"):
+                violations.append(LintViolation(
+                    code="SVELTE-007",
+                    file=filepath,
+                    line=None,
+                    message=f"Svelte 컴포넌트 파일명은 PascalCase이어야 합니다: {filename}",
+                    severity="WARNING",
+                    suggestion=f"파일명을 PascalCase로 변경하세요 (예: UserCard.svelte)",
+                ))
+
+        # SVELTE-008: console.log 사용 (Svelte 파일 내)
+        # ANTI-001과 별도로, Svelte 파일 내 script 블록에서도 탐지
+        # (ANTI-001에서 이미 .svelte에 대해 검사하므로 여기서는 생략)
+
+        return violations
+
+    # ────────────────────────────────────────
+    # 8. 커스텀 규칙 (동적 로드)
+    # ────────────────────────────────────────
+
+    def check_custom_rules(self, filepath: str) -> list[LintViolation]:
+        """custom_rules.json에서 로드된 커스텀 규칙 검증
+
+        에이전트가 새 위반 패턴을 발견하면 custom_rules.json에 추가하여
+        이후 검사에서 자동으로 탐지하도록 합니다.
+        """
+        violations = []
+        if not self.custom_rules:
+            return violations
+
+        ext = Path(filepath).suffix
+
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+        except (UnicodeDecodeError, FileNotFoundError):
+            return violations
+
+        for rule in self.custom_rules:
+            # 확장자 필터링
+            target_exts = rule.get("file_extensions", [])
+            if target_exts and ext not in target_exts:
+                continue
+
+            try:
+                pattern = re.compile(rule["pattern"])
+            except re.error:
+                continue  # 잘못된 정규식은 무시
+
+            exclude_patterns = []
+            for excl in rule.get("exclude_patterns", []):
+                try:
+                    exclude_patterns.append(re.compile(excl))
+                except re.error:
+                    pass
+
+            for i, line in enumerate(lines, 1):
+                if pattern.search(line):
+                    # 제외 패턴 확인
+                    is_excluded = any(ep.search(line) for ep in exclude_patterns)
+                    if not is_excluded:
+                        violations.append(LintViolation(
+                            code=rule.get("code", "CUSTOM-000"),
+                            file=filepath,
+                            line=i,
+                            message=rule.get("description", "커스텀 규칙 위반"),
+                            severity=rule.get("severity", "WARNING"),
+                            suggestion=rule.get("suggestion", ""),
+                        ))
+
+        return violations
+
+    # ────────────────────────────────────────
     # 5. 보안 규칙 (SEC-xxx)
     # ────────────────────────────────────────
 
@@ -917,6 +1188,8 @@ class LintChecker:
             violations.extend(self.check_python_style(filepath))
         elif ext in (".ts", ".js"):
             violations.extend(self.check_typescript_style(filepath))
+        elif ext == ".svelte":
+            violations.extend(self.check_svelte_style(filepath))
 
         # 5. 보안
         violations.extend(self.check_security(filepath))
@@ -926,6 +1199,9 @@ class LintChecker:
 
         # 7. 금지 패턴
         violations.extend(self.check_anti_patterns(filepath))
+
+        # 8. 커스텀 규칙 (동적 로드)
+        violations.extend(self.check_custom_rules(filepath))
 
         return violations
 
@@ -1029,6 +1305,73 @@ def format_json_report(report: LintReport) -> str:
 
 
 # ──────────────────────────────────────────────
+# 규칙 레지스트리
+# ──────────────────────────────────────────────
+
+# 내장 규칙 레지스트리 (에이전트가 참조용으로 사용)
+BUILTIN_RULES = {
+    "FILE-001": "파일명 kebab-case 위반",
+    "FILE-003": "파일 접미사 규칙 위반",
+    "IMP-001":  "임포트 순서 위반 (stdlib → third-party → local)",
+    "IMP-002":  "상대 경로 임포트 사용 (Python)",
+    "IMP-004":  "와일드카드(*) 임포트 사용",
+    "SIZE-001": "파일 라인 수 초과",
+    "STYLE-001": "TypeScript 'any' 타입 사용",
+    "STYLE-002": "Python 함수 타입 힌트 누락",
+    "STYLE-003": "Public 함수/클래스 docstring 누락",
+    "SEC-001":  "하드코딩 시크릿 감지",
+    "ARCH-001": "의존성 방향 위반 (하위→상위 레이어)",
+    "ARCH-002": "레이어 스킵 (UI→Repository 직접 참조)",
+    "ANTI-001": "print()/console.log 사용",
+    "ANTI-002": "eval()/exec() 사용",
+    "ANTI-003": "type: ignore / @ts-ignore 사용",
+    "ANTI-004": "하드코딩 URL/포트 감지",
+    "SVELTE-001": 'Svelte <script> 블록 lang="ts" 미선언',
+    "SVELTE-002": "Svelte 'export let' (Svelte 4 레거시) 사용",
+    "SVELTE-003": "Svelte '$:' (Svelte 4 레거시) 반응형 선언",
+    "SVELTE-004": "Svelte createEventDispatcher 사용",
+    "SVELTE-005": "직접 fetch() 호출 (api_router 미사용)",
+    "SVELTE-006": "인라인 CSS (style=\"...\") 사용",
+    "SVELTE-007": "Svelte 컴포넌트 PascalCase 파일명 위반",
+}
+
+
+def print_rule_registry() -> None:
+    """등록된 모든 규칙 목록 출력"""
+    print("=" * 55)
+    print("  Registered Lint Rules")
+    print("=" * 55)
+    print()
+    print("--- Built-in Rules ---")
+    for code, desc in sorted(BUILTIN_RULES.items()):
+        print(f"  [{code}] {desc}")
+    print()
+
+    # 커스텀 규칙 파일 탐색
+    script_dir = Path(__file__).resolve().parent
+    custom_file = script_dir.parent / CUSTOM_RULES_FILENAME
+    if custom_file.exists():
+        try:
+            with open(custom_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            rules = data.get("rules", [])
+            if rules:
+                print("--- Custom Rules ---")
+                for r in rules:
+                    status = "ON" if r.get("enabled", True) else "OFF"
+                    print(f"  [{r.get('code', '?')}] {r.get('description', '?')} ({status})")
+                print()
+        except (json.JSONDecodeError, KeyError):
+            pass
+    else:
+        print("--- Custom Rules ---")
+        print("  (custom_rules.json not found - no custom rules loaded)")
+        print()
+
+    print("=" * 55)
+
+
+# ──────────────────────────────────────────────
 # 메인 실행
 # ──────────────────────────────────────────────
 
@@ -1053,6 +1396,9 @@ def main() -> int:
                 continue
         elif args[i] == "--help":
             print(__doc__)
+            return 0
+        elif args[i] == "--list-rules":
+            print_rule_registry()
             return 0
         else:
             target_dirs.append(args[i])
