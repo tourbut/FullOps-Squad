@@ -65,3 +65,10 @@ FullOps-Squad는 여러 역할 기반 AI 에이전트(Architect, Backend, Fronte
 3. 코드 작성 및 검토 시 `rules/linter-rules.md`를 철저히 확인하고 지킵니다.
 4. 작업 완료 후 `contexts/`에 최신 워크 컨텍스트를 커밋하며, 역할 이관 시 `handovers/`에 세부 내용을 기록으로 남깁니다.
 5. 코드의 주석을 포함한 모든 문서 답변은 원칙적으로 **한국어**로 작성합니다.
+
+### 🔄 자가 개선 파이프라인 (Self-Improvement Pipeline)
+이 하네스는 정체되지 않고 스스로의 문서 구조와 룰을 객관적으로 분석/최적화하는 내장형 "자기 개선(Self-Improvement) 루프"를 갖추고 있습니다. 
+
+- **평가 지표 (`harness-metrics.md`)**: 에이전트 작업 간의 핑퐁 반복 횟수, 룰 위반율, 스킬 구동 성공률 등을 수치화하여 하네스의 건강 점수(Health Score) 기준으로 관리합니다.
+- **상태 진단 스킬 (`evaluate-harness`)**: 현재 프로젝트의 누적 로그(`.agents/handovers/logs/`)와 컨텍스트 문서들을 읽어들여 낡은 관행이나 문제점을 파악하고, 일정한 포맷(`.agents/docs/evaluations/harness/YYYY-MM-DD_harness-health-report.md`)으로 개선 권고안(Action Items)을 리포트합니다.
+- **자가 개선 워크플로우 (`/improve`)**: 스킬을 기동하여 진단을 내린 후, 도출된 Action Items를 바탕으로 낡은 규칙을 폐기하거나 문서를 자체 리팩토링합니다. 개선 결과는 발행된 리포트 하단에 `Before/After` 이력으로 누적 보존됩니다.
