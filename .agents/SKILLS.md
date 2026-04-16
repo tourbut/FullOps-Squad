@@ -115,6 +115,7 @@ Skills
 | 스킬 | 설명 |
 |------|------|
 | `skill-creator` | 새 스킬 생성, 기존 스킬 개선, 성능 측정 |
+| `evaluate-harness` | 하네스의 구조 효율성과 지표를 평가하고 진단 리포트 도출 |
 | `frontend-design` | 프로덕션급 프론트엔드 UI 구현 |
 | `canvas-design` | 시각적 아트/포스터/디자인 제작 |
 | `algorithmic-art` | p5.js 기반 알고리즘 아트 생성 |
@@ -143,6 +144,7 @@ Skills
 | `/frontend` | 프론트엔드 UI/UX 구현 및 API 연동 | Frontend Dev |
 | `/devops` | 인프라 구성, CI/CD 구축 및 배포 자동화 | DevOps |
 | `/qa` | 품질 기준에 따른 테스트 및 버그 리포트 생성 | QA |
+| `/improve` | 하네스 최적화 평가 및 지표에 기반한 자율 개선 | Architect / Master |
 
 ---
 

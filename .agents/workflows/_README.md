@@ -17,6 +17,7 @@ workflows/
 ├── frontend.md              # /frontend 워크플로우 정의
 ├── devops.md                # /devops 워크플로우 정의
 └── qa.md                    # /qa 워크플로우 정의
+└── improve.md               # /improve 워크플로우 정의
 ```
 
 ---
@@ -58,6 +59,7 @@ description: [이 워크플로우가 수행하는 작업 설명]
 | `/frontend` | 프론트엔드 UI/UX 구현 및 API 연동 | Frontend Dev | ✅ 구현됨 |
 | `/devops` | 인프라 구성, CI/CD 구축 및 배포 자동화 | DevOps | ✅ 구현됨 |
 | `/qa` | 품질 기준에 따른 테스트 및 버그 리포트 | QA | ✅ 구현됨 |
+| `/improve` | 건강 상태 평가(evaluate-harness) 기반 자가 개선 | Architect | ✅ 구현됨 |
 
 ---
 
