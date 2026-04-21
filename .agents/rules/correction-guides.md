@@ -18,8 +18,8 @@
 
 ## Style Violations (STYLE-xxx)
 - **STYLE-001**: Replace TS `any` with specific types or `unknown` + type guard.
-- **STYLE-002**: Add explicit Python type hints (param types and `-> ReturnType`).
-- **STYLE-003**: Add Google-style docstrings or JSDoc for public functions/classes.
+- **STYLE-002**: Add explicit Python type hints (param types and `-> ReturnType`). (Enforced by `Ruff ANN`)
+- **STYLE-003**: Add Google-style docstrings or JSDoc for public functions/classes. (Enforced by `Ruff D`)
 
 ## Security Violations (SEC-xxx)
 - **SEC-001**: Move hardcoded secrets to `.env` or `os.environ` / Config layer.
@@ -41,6 +41,59 @@
 - **SVELTE-006**: Replace `<div style="...">` with equivalent Tailwind CSS utility classes.
 - **SVELTE-007**: Rename `.svelte` component to `PascalCase.svelte`.
 
-## Custom Violations (CUSTOM-xxx)
-- **CUSTOM-001**: Replace `sleep()` with explicit timeout conditions/polling.
 - **Other**: Check `suggestion` in `custom_rules.json` or `lint_checker.py --list-rules`.
+
+---
+
+## Appendix: Frontend Setup Template (ESLint & Prettier)
+
+프론트엔드(`frontend/`) 디렉터리 구축 시, 다음 설정을 적용하여 `linter-rules.md`를 기계적으로 강제할 수 있습니다.
+
+### 1. `eslint.config.js` (Flat Config)
+```javascript
+import svelte from "eslint-plugin-svelte";
+import ts from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import svelteParser from "svelte-eslint-parser";
+
+export default [
+  {
+    files: ["**/*.ts", "**/*.js", "**/*.svelte"],
+    languageOptions: {
+      parser: tsParser,
+      extraFileExtensions: [".svelte"],
+    },
+    plugins: {
+      "@typescript-eslint": ts,
+      svelte: svelte,
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error", // STYLE-001
+      "svelte/no-at-html-tags": "warn",
+      "svelte/no-inner-declarations": "error",
+      // Svelte 5 Runes 강제 및 레거시 문법 금지 설정 필요
+    },
+  },
+  {
+    files: ["**/*.svelte"],
+    languageOptions: {
+      parser: svelteParser,
+      parserOptions: {
+        parser: tsParser,
+      },
+    },
+  },
+];
+```
+
+### 2. `.prettierrc`
+```json
+{
+  "useTabs": false,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "plugins": ["prettier-plugin-svelte"],
+  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+}
+```

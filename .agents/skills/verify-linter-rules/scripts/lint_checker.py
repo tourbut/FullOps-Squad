@@ -20,6 +20,7 @@ import ast
 import json
 import os
 import re
+import subprocess
 import sys
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
@@ -375,6 +376,7 @@ class LintChecker:
         if ext in PASCAL_CASE_ALLOWED_EXTENSIONS:
             return violations
 
+        # [DEPRECATED] TS/Svelte 스타일 정규식 체크 (ESLint 도입 전까지 유지)
         # FILE-001: kebab-case 검사
         if ext in (".py", ".ts", ".js"):
             if not is_kebab_case(filename) and not is_test_file(filename):
@@ -428,96 +430,136 @@ class LintChecker:
         return violations
 
     # ────────────────────────────────────────
-    # 2. 임포트 규칙 (IMP-xxx) — Python
+    # 2. 임포트 & 스타일 (Ruff & ESLint 통합)
     # ────────────────────────────────────────
 
-    def check_python_imports(self, filepath: str) -> list[LintViolation]:
-        """Python 파일의 임포트 규칙 검증"""
+    def _run_ruff(self, target_paths: list[str]) -> list[LintViolation]:
+        """Ruff를 실행하여 결과를 LintViolation 목록으로 변환"""
         violations = []
-
+        
+        # ruff 바이너리 탐색
+        ruff_bin = "ruff"
+        # 로컬 .venv/bin/ruff 확인 (Mac/Linux)
+        venv_ruff = self.project_root / "backend" / ".venv" / "bin" / "ruff"
+        if venv_ruff.exists():
+            ruff_bin = str(venv_ruff)
+        
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                source = f.read()
-            tree = ast.parse(source)
-        except (SyntaxError, UnicodeDecodeError):
-            return violations
-
-        imports = []
-        for node in ast.iter_child_nodes(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    imports.append({
-                        "type": "import",
-                        "module": alias.name,
-                        "line": node.lineno,
-                        "category": classify_python_import(alias.name),
-                        "level": 0,
-                    })
-            elif isinstance(node, ast.ImportFrom):
-                module = node.module or ""
-
-                # IMP-002: 상대 경로 임포트 검사
-                if node.level > 0:
-                    violations.append(LintViolation(
-                        code="IMP-002",
-                        file=filepath,
-                        line=node.lineno,
-                        message=f"상대 경로 임포트 사용: from {'.' * node.level}{module} import ...",
-                        severity="ERROR",
-                        suggestion=f"절대 경로 임포트로 변경하세요 (예: from app.{module} import ...)",
-                    ))
-
-                # IMP-004: 와일드카드 임포트 검사
-                for alias in node.names:
-                    if alias.name == "*":
-                        violations.append(LintViolation(
-                            code="IMP-004",
-                            file=filepath,
-                            line=node.lineno,
-                            message=f"와일드카드(*) 임포트 사용: from {module} import *",
-                            severity="ERROR",
-                            suggestion="명시적 임포트로 변경하세요 (예: from module import specific_name)",
-                        ))
-
-                imports.append({
-                    "type": "from",
-                    "module": module,
-                    "line": node.lineno,
-                    "category": classify_python_import(module),
-                    "level": node.level,
-                })
-
-        # IMP-001: 임포트 순서 검사
-        if len(imports) >= 2:
-            category_order = {"stdlib": 0, "third_party": 1, "local": 2}
-            prev_category_rank = -1
-            prev_line = 0
-            blank_line_between_groups = True
-
-            for imp in imports:
-                if imp["level"] > 0:
-                    continue  # 상대 임포트는 이미 IMP-002로 보고됨
-                curr_rank = category_order.get(imp["category"], 2)
-
-                # 그룹 순서가 역전된 경우
-                if curr_rank < prev_category_rank:
-                    violations.append(LintViolation(
-                        code="IMP-001",
-                        file=filepath,
-                        line=imp["line"],
-                        message=(
-                            f"임포트 순서 위반: {imp['category']} 임포트가 "
-                            f"이전 그룹보다 뒤에 위치해야 합니다"
-                        ),
-                        severity="WARNING",
-                        suggestion="순서: Standard Library → Third-party → Local",
-                    ))
-                    break  # 첫 위반만 보고
-
-                prev_category_rank = curr_rank
-                prev_line = imp["line"]
-
+            cmd = [
+                ruff_bin, "check", 
+                "--output-format", "json",
+                "--no-fix"
+            ] + target_paths
+            
+            result = subprocess.run(
+                cmd, 
+                capture_output=True, 
+                text=True, 
+                cwd=str(self.project_root)
+            )
+            
+            if not result.stdout:
+                return violations
+                
+            ruff_data = json.loads(result.stdout)
+            for item in ruff_data:
+                # Ruff 결과를 LintViolation으로 매핑
+                fix = item.get("fix")
+                fix_msg = fix.get("message") if fix else "Ruff 가이드를 참조하세요"
+                
+                violations.append(LintViolation(
+                    code=f"RUFF-{item.get('code')}",
+                    file=str(Path(item.get("filename")).resolve()),
+                    line=item.get("location", {}).get("row"),
+                    message=item.get("message"),
+                    severity="ERROR" if item.get("severity") == "error" else "WARNING",
+                    suggestion=fix_msg
+                ))
+        except Exception as e:
+            # ruff 실행 실패 시 (설치 안됨 등) 경고 기록
+            violations.append(LintViolation(
+                code="LINT-ERR",
+                file="n/a",
+                line=None,
+                message=f"Ruff 실행 중 오류 발생: {str(e)}",
+                severity="WARNING",
+                suggestion="pip install ruff 또는 backend/pyproject.toml 설정을 확인하세요"
+            ))
+            
         return violations
+
+    def _run_eslint(self, target_paths: list[str]) -> list[LintViolation]:
+        """ESLint를 실행하여 결과를 LintViolation 목록으로 변환"""
+        violations = []
+        frontend_dir = self.project_root / "frontend"
+        
+        try:
+            # 절대 경로로 변환하여 eslint에 전달 (frontend 밖의 폴더에서 호출될 수 있으므로)
+            target_paths_abs = [str(Path(p).resolve()) for p in target_paths]
+            
+            # npx eslint 실행 (json 포맷)
+            cmd = ["npx", "eslint", "--format", "json"] + target_paths_abs
+            
+            result = subprocess.run(
+                cmd, 
+                capture_output=True, 
+                text=True, 
+                cwd=str(frontend_dir)
+            )
+            
+            # ESLint는 에러가 있으면 exit code 1을 반환함
+            if not result.stdout.strip():
+                return violations
+                
+            eslint_data = json.loads(result.stdout)
+            for file_data in eslint_data:
+                filename = file_data.get("filePath", "unknown")
+                for msg in file_data.get("messages", []):
+                    # ESLint 결과를 LintViolation으로 매핑
+                    severity = "ERROR" if msg.get("severity") == 2 else "WARNING"
+                    rule_id = msg.get("ruleId") or "PARSE_ERROR"
+                    fix_obj = msg.get("fix", {})
+                    
+                    violations.append(LintViolation(
+                        code=f"ESLINT-{rule_id}",
+                        file=str(Path(filename).resolve()),
+                        line=msg.get("line"),
+                        message=msg.get("message"),
+                        severity=severity,
+                        suggestion=fix_obj.get("text", "ESLint 가이드를 참조하세요") if isinstance(fix_obj, dict) else "ESLint 가이드를 참조하세요"
+                    ))
+        except Exception as e:
+            # ESLint 실행 실패 시 (설치 안됨, package.json 없음 등) 경고 기록
+            violations.append(LintViolation(
+                code="LINT-ERR",
+                file="n/a",
+                line=None,
+                message=f"ESLint 실행 중 오류 발생 (프론트엔드 환경 확인 필요): {str(e)}",
+                severity="WARNING",
+                suggestion="프론트엔드 폴더(frontend/)에서 npm install을 실행하거나 eslint 설정을 확인하세요"
+            ))
+            
+        return violations
+
+    def check_python_imports(self, filepath: str) -> list[LintViolation]:
+        """[DEPRECATED] Ruff 도입으로 인해 사용되지 않음"""
+        return []
+
+    def check_python_style(self, filepath: str) -> list[LintViolation]:
+        """[DEPRECATED] Ruff 도입으로 인해 사용되지 않음"""
+        return []
+
+    def check_typescript_imports(self, filepath: str) -> list[LintViolation]:
+        """[DEPRECATED] ESLint 도입으로 인해 사용되지 않음"""
+        return []
+
+    def check_typescript_style(self, filepath: str) -> list[LintViolation]:
+        """[DEPRECATED] ESLint 도입으로 인해 사용되지 않음"""
+        return []
+
+    def check_svelte_style(self, filepath: str) -> list[LintViolation]:
+        """[DEPRECATED] ESLint 도입으로 인해 사용되지 않음"""
+        return []
 
     # ────────────────────────────────────────
     # 2b. 임포트 규칙 (IMP-xxx) — TypeScript
@@ -1177,19 +1219,8 @@ class LintChecker:
         # 2. 파일 크기
         violations.extend(self.check_file_size(filepath))
 
-        # 3. 임포트 규칙
-        if ext == ".py":
-            violations.extend(self.check_python_imports(filepath))
-        elif ext in (".ts", ".js"):
-            violations.extend(self.check_typescript_imports(filepath))
-
-        # 4. 코드 스타일
-        if ext == ".py":
-            violations.extend(self.check_python_style(filepath))
-        elif ext in (".ts", ".js"):
-            violations.extend(self.check_typescript_style(filepath))
-        elif ext == ".svelte":
-            violations.extend(self.check_svelte_style(filepath))
+        # 3. 임포트 규칙 & 4. 코드 스타일
+        # Python은 Ruff, JS/TS/Svelte는 ESLint에서 통합 처리하므로 개별 검사 생략
 
         # 5. 보안
         violations.extend(self.check_security(filepath))
@@ -1230,7 +1261,19 @@ class LintChecker:
         files = self.collect_files(resolved_dirs)
         self.report.files_checked = len(files)
 
-        # 각 파일 검사
+        # 1. Ruff 실행 (Python 통합 검사)
+        python_files = [f for f in files if f.endswith(".py")]
+        if python_files:
+            # 개별 파일 경로를 Ruff에 전달
+            self.report.violations.extend(self._run_ruff(resolved_dirs))
+
+        # 1.5 ESLint 실행 (JS/TS/Svelte 통합 검사)
+        frontend_files = [f for f in files if f.endswith((".ts", ".js", ".svelte"))]
+        if frontend_files:
+             # ESLint에 대상 전달
+            self.report.violations.extend(self._run_eslint(resolved_dirs))
+
+        # 2. 각 파일별 개별 규칙 검사 (커스텀 룰, 파일 네이밍 등)
         for filepath in files:
             file_violations = self.check_file(filepath)
             self.report.violations.extend(file_violations)
