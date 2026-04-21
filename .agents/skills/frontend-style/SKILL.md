@@ -6,7 +6,7 @@ description: 프론트엔드 코드 스타일 검증 (Svelte 5 + FastAPI Client)
 # 프론트엔드 코드 스타일 및 API 규칙 검증
 
 ## Purpose
-프론트엔드 애플리케이션(`.svelte`, `.ts`, `.js`)에서 코딩 규칙(`dev-frontend-svelte.md`) 및 백엔드와의 API 통신 양식을 포괄적으로 점검합니다. 
+프론트엔드 애플리케이션(`.svelte`, `.ts`, `.js`)에서 코딩 규칙(`linter-rules.md`) 및 백엔드와의 API 통신 양식을 포괄적으로 점검합니다. 
 
 이 스킬은 Svelte 5(Runes), TypeScript 엄격성, CSS 제약 조건, API 래퍼 사용성 등 핵심 프론트엔드 룰이 준수되고 있는지 자동 및 수동 병합 검증을 통해 확인합니다.
 
