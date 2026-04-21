@@ -91,42 +91,15 @@ Skills
 
 ---
 
-## Utility Skills
-
-문서 생성 및 범용 도구입니다.
-
-### `docx`
-- **설명**: Word 문서(.docx) 생성, 읽기, 편집
-- **호출 시점**: Word 문서 관련 작업 시
-
-### `pdf`
-- **설명**: PDF 파일 생성, 읽기, 병합, 분할
-- **호출 시점**: PDF 파일 관련 작업 시
-
-### `pptx`
-- **설명**: PowerPoint 프레젠테이션 생성/편집
-- **호출 시점**: 슬라이드/프레젠테이션 관련 작업 시
-
-### `xlsx`
-- **설명**: Excel 스프레드시트 생성/편집
-- **호출 시점**: 스프레드시트 관련 작업 시
-
-### 기타 유틸리티
+### 유틸리티 및 기타 스킬
 | 스킬 | 설명 |
 |------|------|
 | `skill-creator` | 새 스킬 생성, 기존 스킬 개선, 성능 측정 |
 | `evaluate-harness` | 하네스의 구조 효율성과 지표를 평가하고 진단 리포트 도출 |
 | `frontend-design` | 프로덕션급 프론트엔드 UI 구현 |
-| `canvas-design` | 시각적 아트/포스터/디자인 제작 |
-| `algorithmic-art` | p5.js 기반 알고리즘 아트 생성 |
-| `brand-guidelines` | 브랜드 색상/타이포그래피 적용 |
-| `theme-factory` | 아티팩트 테마 스타일링 |
 | `web-artifacts-builder` | 복잡한 웹 아티팩트 제작 (React + Tailwind) |
 | `webapp-testing` | Playwright 기반 웹앱 테스트 |
-| `doc-coauthoring` | 문서 공동 작성 워크플로우 |
-| `internal-comms` | 내부 커뮤니케이션 문서 작성 |
 | `mcp-builder` | MCP 서버 구축 가이드 |
-| `slack-gif-creator` | Slack용 애니메이션 GIF 제작 |
 
 ---
 
