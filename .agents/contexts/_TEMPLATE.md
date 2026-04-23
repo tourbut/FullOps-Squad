@@ -1,7 +1,7 @@
 # Context — <Role Name>
 
 > **Role**: [Architect / Backend / Frontend / DevOps / QA / Coordinator]
-> **File Path**: `contexts/<role>_context.md`
+> **File Path**: `contexts/<role>.md` (e.g., `architect.md`, `backend_dev.md`)
 > **Last Updated**: YYYY-MM-DD HH:mm:ss
 
 ---

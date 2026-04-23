@@ -1,25 +1,22 @@
 ---
-description: 프론트엔드 UI/UX 구현 및 API 연동 개발
+description: 프론트엔드 UI/UX 구현 및 API 연동
 ---
 
 ## Preconditions
-- `.agents/handovers/to_frontend_dev.md` 문서에 UI/UX 및 연동 요구사항이 명확하게 작성되어 있어야 함.
+- `.agents/handovers/to_frontend_dev.md`에 UI/UX·연동 요구사항이 명확히 기재되어 있어야 함.
 
 ## Steps
-1. `.agents/handovers/to_frontend_dev.md`를 분석하여 변경 필요 사항과 기대 산출물을 파악합니다.
-2. 해당 역할의 컨텍스트 파일(`.agents/contexts/`)을 불러옵니다.
-3. `git-rules` 스킬(또는 `.agents/skills/git-rules/SKILL.md`)을 참고하여 적절한 브랜치(예: `develop/*`)를 생성하고 체크아웃합니다.
-4. 프론트엔드 개발 요청사항을 수행하며, 디자인 가이드(`FRONTEND.md` 및 `ui-ux-guidelines.md`)를 준수합니다. (요청 밖의 기능 작업은 제한)
-5. 구현한 사항에 대해 브라우저 표시 및 로직 단위 테스트를 추가합니다.
-6. 작업 완료 후 GitHub(또는 사용 중인 호스팅 서비스)에서 PR(Pull Request)을 생성합니다.
-7. 리뷰 통과 시 `develop` 브랜치에 병합합니다.
+1. **Common Preamble** 수행.
+2. `FRONTEND.md`·`docs/design-docs/ui-ux-guidelines.md` 가이드 내에서 구현한다 (요청 밖 기능 추가 금지).
+3. Svelte 5 Runes 문법(`$state`/`$props`/`$derived`/`$effect`, callback props) 사용 여부와 인라인 style 미사용을 자가 점검한다.
+4. `frontend-style`·`verify-linter-rules`·`webapp-testing` 스킬을 순차 실행한다.
+5. PR 생성 → 리뷰 통과 시 `develop` 병합.
+6. **Common Postamble** 수행.
 
 ## Outputs
-- 수정/추가된 프론트엔드 소스코드 및 컴포넌트
-- UI 검증 스크린샷 또는 E2E/단위 테스트 코드
+- 수정/추가 프론트엔드 소스코드·스토리북/E2E 테스트·UI 검증 스크린샷
 - 생성된 Pull Request
-- `.agents/handovers/logs/YYYY-MM-DD_to_frontend_dev.md` (완료 백업)
+- `handovers/logs/YYYY-MM-DD_to_frontend_dev.md`
 
 ## Rollback
-- 적용된 변경 브랜치를 삭제하고 PR을 닫습니다.
-- `.agents/handovers/logs/...`에 백업된 내역을 기존 핸드오버 파일로 복원합니다.
+- 브랜치 파기·PR 종료, 백업된 handover 로그 복원.

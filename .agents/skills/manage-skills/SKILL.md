@@ -84,7 +84,7 @@ git diff main...HEAD --name-only 2>/dev/null
 
 등록된 스킬이 0개인 경우, Step 4 (CREATE vs UPDATE 결정)로 바로 이동합니다. 모든 변경 파일이 "UNCOVERED"로 처리됩니다.
 
-등록된 스킬이 1개 이상인 경우, 각 스킬의 `.agent/skills/verify-<name>/SKILL.md`를 읽고 다음에서 추가 파일 경로 패턴을 추출합니다:
+등록된 스킬이 1개 이상인 경우, 각 스킬의 `.agents/skills/verify-<name>/SKILL.md`를 읽고 다음에서 추가 파일 경로 패턴을 추출합니다:
 
 1. **Related Files** 섹션 — 테이블을 파싱하여 파일 경로 및 glob 패턴 추출
 2. **Workflow** 섹션 — grep/glob/read 명령어에서 파일 경로 추출
@@ -224,7 +224,7 @@ grep -n "pattern" path/to/file.ts
    - 사용자가 `verify-` 접두사 없이 이름을 제공하면 자동으로 앞에 추가하고 사용자에게 알립니다
    - kebab-case를 사용합니다 (예: `verify-error-handling`, `verify_error_handling` 아님)
 
-3. **생성** — `.agent/skills/verify-<name>/SKILL.md`를 다음 템플릿에 따라 생성합니다:
+3. **생성** — `.agents/skills/verify-<name>/SKILL.md`를 다음 템플릿에 따라 생성합니다:
 
 ```yaml
 ---
@@ -322,8 +322,8 @@ ls <file-path> 2>/dev/null || echo "MISSING: <file-path>"
 
 | File | Purpose |
 |------|---------|
-| `.agent/skills/verify-implementation/SKILL.md` | 통합 검증 스킬 (이 스킬이 실행 대상 목록을 관리) |
-| `.agent/skills/manage-skills/SKILL.md` | 이 파일 자체 (등록된 검증 스킬 목록을 관리) |
+| `.agents/skills/verify-implementation/SKILL.md` | 통합 검증 스킬 (이 스킬이 실행 대상 목록을 관리) |
+| `.agents/skills/manage-skills/SKILL.md` | 이 파일 자체 (등록된 검증 스킬 목록을 관리) |
 | `SKILLS.md` | 프로젝트 지침 (이 스킬이 Skills 섹션을 관리) |
 
 ## 예외사항

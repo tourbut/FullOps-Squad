@@ -1,135 +1,65 @@
-# SKILLS.md — Agent Skills & Tool Specifications
+# SKILLS.md — Agent Skills & Workflows Index
 
-<!-- AI Harness Rule: Document the extended functionalities (skills) available to the agent and provide a specification on when and how to invoke each tool. -->
+<!-- AI Harness Rule: 에이전트가 사용할 수 있는 스킬(확장 기능)과 워크플로우(슬래시 커맨드) 전체 목록과 호출 시점을 한눈에 볼 수 있도록 정리한다. 상세 구현/절차는 각 `skills/<name>/SKILL.md` 또는 `workflows/<name>.md`에 있다. -->
 
-> 에이전트에게 제공되는 확장 기능(스킬)을 정의하고,
-> 각 도구를 언제, 어떻게 호출해야 하는지 명시합니다.
-> 새로운 스킬 추가 시 이 문서를 먼저 업데이트한 후 `skills/`에 구현합니다.
-
----
-
-## 스킬 분류
-
-```
-Skills
-├── Process Skills         # 에이전트 작업 프로세스 관리
-├── Verification Skills    # 코드/문서 품질 검증
-├── Development Skills     # 개발 관련 보조 도구
-└── Utility Skills         # 범용 유틸리티
-```
+> 새 스킬·워크플로우 추가 시 이 문서에 **먼저 한 줄로 등록**한 뒤 구현 파일을 작성한다.
+> 스킬은 `skills/`, 워크플로우는 `workflows/` 디렉토리에 위치한다.
 
 ---
 
-## Process Skills
+## 1. 프로세스 · 품질 스킬
 
-에이전트의 작업 흐름과 지식 관리를 위한 스킬입니다.
+| 스킬 | 호출 시점 | 주요 경로 |
+|------|----------|-----------|
+| `role-context` | 작업 전(지식 로드)·후(지식 축적) | `contexts/<role>.md` |
+| `handover` | `to_<role>.md`의 모든 태스크 완료 시 | `handovers/to_*.md` → `handovers/logs/` |
+| `git-rules` | 커밋/Push/PR 생성 직전 | — |
+| `manage-skills` | 신규 스킬 생성·기존 스킬 동기화 시 | `skills/verify-*/SKILL.md` |
+| `verify-implementation` | 기능 구현 후·PR 전 통합 검증 | 전체 `verify-*` 스킬 오케스트레이션 |
+| `verify-linter-rules` | 코드 변경 후 기계적 린터 검증 | `backend/**/*.py`, `frontend/src/**` |
+| `backend-style` | 백엔드 로직 수정 후 (Models/Schemas/CRUD/Routes) | `backend/app/...` |
+| `frontend-style` | 프론트 구현·API 연동 후 (Runes/API 래퍼/Tailwind) | `frontend/src/...` |
+| `qa-tester` | QA 테스트 실행·버그 리포트 생성 시 | `.agents/docs/evaluations/qa-reports/` |
 
-### `role-context`
-- **설명**: 에이전트의 역할별 지식 관리 (로드/축적)
-- **호출 시점**: 작업 시작 전(지식 로드), 작업 완료 후(지식 기록)
-- **경로**: `contexts/<role>.md`
+## 2. 개발 보조 스킬
 
-### `handover`
-- **설명**: 역할 간 작업 이관(Handover) 완료 처리 및 로그 기록
-- **호출 시점**: Handover 문서의 모든 태스크 완료 시
-- **경로**: `handovers/to_<role>.md` → `handovers/logs/`
+| 스킬 | 호출 시점 |
+|------|----------|
+| `debug` | 로컬 서버 구동·로그 확인이 필요한 개발 단계 |
+| `refactoring` | 코드 스멜 식별 및 안전한 리팩토링 |
+| `prompt-engineer` | LLM/시스템 프롬프트 설계·최적화 |
+| `skill-creator` | 새 스킬 생성·기존 스킬 개선/평가 |
+| `evaluate-harness` | 하네스 건강 지표 측정 및 진단 리포트 생성 |
+| `frontend-design` | 프로덕션급 UI 구현 가이드 |
+| `web-artifacts-builder` | React + Tailwind 기반 웹 아티팩트 제작 |
+| `webapp-testing` | Playwright 기반 웹앱 E2E 테스트 |
+| `mcp-builder` | 외부 서비스 연동용 MCP 서버 구축 |
 
-### `git-rules`
-- **설명**: Git 커밋 메시지 컨벤션 및 브랜치 전략 검증
-- **호출 시점**: 코드 커밋/Push 시, PR 생성 전
+## 3. 워크플로우 (슬래시 커맨드)
 
-### `manage-skills`
-- **설명**: 기존 스킬 탐색, 신규 스킬 생성/업데이트, SKILLS.md 관리
-- **호출 시점**: 새로운 스킬이 필요하거나 기존 스킬 변경 시
-
----
-
-## Verification Skills
-
-코드와 문서의 품질을 자동 검증하는 스킬입니다.
-
-### `verify-implementation`
-- **설명**: 모든 `verify-*` 스킬을 순차 실행하여 통합 검증 보고서 생성
-- **호출 시점**: 기능 구현 후, PR 생성 전, 코드 리뷰 시
-
-### `backend-style`
-- **설명**: 백엔드 코드 스타일 검증 (FastAPI + SQLModel)
-- **호출 시점**: 백엔드 로직 수정 후
-- **검증 대상**: Models, Schemas, CRUD, Routes
-
-### `frontend-style`
-- **설명**: 프론트엔드 코드 스타일 검증 (Svelte 5 + FastAPI Client)
-- **호출 시점**: 프론트엔드 구현 및 API 연동 후
-- **검증 대상**: Runes 문법, 인라인 CSS, API 래퍼 사용
-
-### `verify-linter-rules`
-- **설명**: `linter-rules.md`에 정의된 기계적 린터 규칙을 코드로 직접 검증
-- **호출 시점**: 코드 변경 후, PR 전, 코드 리뷰 시
-- **검증 대상**: 파일 네이밍, 임포트 순서, 파일 크기, 코드 스타일, 보안, 아키텍처, 금지 패턴
-
-### `qa-tester`
-- **설명**: QA 테스트 케이스 작성, 테스트 실행, 버그 리포트 생성
-- **호출 시점**: 기능 테스트가 필요할 때
-
----
-
-## Development Skills
-
-개발 작업을 보조하는 스킬입니다.
-
-### `debug`
-- **설명**: 디버깅을 위한 서버 구동 및 로그 확인
-- **호출 시점**: 로컬 개발 환경에서 테스트가 필요할 때
-
-### `refactoring`
-- **설명**: 코드 스멜 식별 및 안전한 리팩토링 가이드
-- **호출 시점**: 코드 품질 개선 작업 시
-
-### `prompt-engineer`
-- **설명**: LLM용 프롬프트 및 시스템 프롬프트 설계/최적화
-- **호출 시점**: AI 관련 프롬프트 작성 요청 시
-
----
-
-### 유틸리티 및 기타 스킬
-| 스킬 | 설명 |
-|------|------|
-| `skill-creator` | 새 스킬 생성, 기존 스킬 개선, 성능 측정 |
-| `evaluate-harness` | 하네스의 구조 효율성과 지표를 평가하고 진단 리포트 도출 |
-| `frontend-design` | 프로덕션급 프론트엔드 UI 구현 |
-| `web-artifacts-builder` | 복잡한 웹 아티팩트 제작 (React + Tailwind) |
-| `webapp-testing` | Playwright 기반 웹앱 테스트 |
-| `mcp-builder` | MCP 서버 구축 가이드 |
-
----
-
-## Workflow Skills
-
-슬래시 커맨드로 트리거되는 자동화된 작업 흐름입니다.
-구현은 `workflows/` 디렉토리에 위치합니다.
+> 각 워크플로우는 `Preconditions → Steps → Outputs → Rollback` 형식이며,
+> 공통 전처리(핸드오버 읽기 → 컨텍스트 로드 → 브랜치 생성)는 `workflows/_README.md`의 **Common Preamble**에서 1회 정의한다.
 
 | 커맨드 | 설명 | 실행자 |
 |--------|------|--------|
-| `/master` | 요구사항 분석 및 제품 명세/기획안 생성 | PM |
-| `/coordinator` | 태스크를 역할별 Handover 파일로 분배 | Coordinator |
+| `/master` | 요구사항 분석 및 제품 명세 생성 | PM |
+| `/coordinator` | 상위 태스크를 역할별 Handover 파일로 분배 | Coordinator |
 | `/architect` | 시스템 아키텍처 설계 및 기술 스택 관리 | Architect |
 | `/backend` | 백엔드 모듈/API 설계 및 비즈니스 로직 개발 | Backend Dev |
 | `/frontend` | 프론트엔드 UI/UX 구현 및 API 연동 | Frontend Dev |
-| `/devops` | 인프라 구성, CI/CD 구축 및 배포 자동화 | DevOps |
-| `/qa` | 품질 기준에 따른 테스트 및 버그 리포트 생성 | QA |
-| `/improve` | 하네스 최적화 평가 및 지표에 기반한 자율 개선 | Architect / Master |
+| `/devops` | 인프라 구성·CI/CD 구축·배포 자동화 | DevOps |
+| `/qa` | 품질 기준에 따른 테스트 및 버그 리포트 | QA |
+| `/release` | `develop` → `main` 병합 및 배포 준비 | DevOps |
+| `/improve` | 하네스 평가·자율 개선 루프 | Architect |
 
 ---
 
-## 스킬 추가 절차
+## 스킬/워크플로우 추가 절차
 
-1. 이 문서(`SKILLS.md`)에 스킬 사양을 먼저 추가
-2. `skills/` 디렉토리에 구현 코드 작성
-3. 해당 역할의 컨텍스트 파일에 신규 스킬 사용 기록
-4. 린터 규칙 위반 없음 확인
-5. 테스트 코드 작성 후 PR 제출
+1. 이 문서의 해당 테이블에 **한 줄 등록** (이름·호출 시점·경로)
+2. `skills/<name>/SKILL.md` 또는 `workflows/<name>.md` 구현
+3. 역할 컨텍스트(`contexts/<role>.md`)에 사용 기록 시드
+4. `verify-linter-rules` 통과 확인 후 PR 제출
 
----
-
-> **참고**: 스킬 호출 시 `ARCHITECTURE.md`의 의존성 규칙을 반드시 확인하세요.
-> 레이어 경계를 넘는 스킬 호출은 자동으로 차단됩니다.
+> 스킬 호출 시 `ARCHITECTURE.md`의 레이어 의존 방향을 우선 확인한다.
+> 레이어 경계 위반 호출은 자동 차단된다.
