@@ -5,6 +5,10 @@
 > Defines quality grades, coding conventions, and component design principles required for the frontend domain.
 > Frontend agents must familiarize themselves with this document before starting work.
 
+> **선행 필수**: UI 구현 전 `DESIGN.md §4 표준 디자인 소스 세트`의 모든 파일을 로드한다.
+> (`docs/design-docs/design.md` · `docs/references/design-system-reference-llms.txt` · `docs/design-docs/ui-ux-guidelines.md` · `docs/generated/design-mockup.html`)
+> 모든 색상·간격·타이포는 토큰 값만 사용하며, 임의 값 하드코딩을 금지한다.
+
 ---
 
 ## Tech Stack Conventions

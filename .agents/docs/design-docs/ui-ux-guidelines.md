@@ -4,6 +4,7 @@
 
 > UI와 UX 디자인을 표준화하기 위한 평가 지표, 가이드라인, 루브릭을 정의합니다.
 > 상세한 등급 기준은 `FRONTEND.md`의 Design Quality / Originality & UX / Functionality 섹션을 참조하세요.
+> 이 문서는 `DESIGN.md §4 표준 디자인 소스 세트`의 구성원이다.
 
 ---
 
