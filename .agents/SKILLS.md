@@ -34,6 +34,7 @@
 | `web-artifacts-builder` | React + Tailwind 기반 웹 아티팩트 제작 |
 | `webapp-testing` | Playwright 기반 웹앱 E2E 테스트 |
 | `mcp-builder` | 외부 서비스 연동용 MCP 서버 구축 |
+| `context7-mcp` | 라이브러리·프레임워크·API 문서를 Context7로 실시간 조회 |
 
 ## 3. 워크플로우 (슬래시 커맨드)
 
