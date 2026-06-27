@@ -43,7 +43,7 @@
 
 | 커맨드 | 설명 | 실행자 |
 |--------|------|--------|
-| `/master` | 요구사항 분석 및 제품 명세 생성 | PM |
+| `/master` | 신규 요구사항·기능 분석 및 기획 산출물(meeting-logs·cps·product-specs) 현행화 | PM |
 | `/coordinator` | 상위 태스크를 역할별 Handover 파일로 분배 | Coordinator |
 | `/architect` | 시스템 아키텍처 설계 및 기술 스택 관리 | Architect |
 | `/backend` | 백엔드 모듈/API 설계 및 비즈니스 로직 개발 | Backend Dev |

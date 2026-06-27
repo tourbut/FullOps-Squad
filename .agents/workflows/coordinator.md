@@ -10,9 +10,10 @@ description: 상위 레벨 태스크를 역할별 Handover 파일로 분배·지
 
 ### 1. 현황·컨텍스트 분석
 다음 문서를 읽고 현재 프로젝트 상태(완료/진행/예정)를 파악한다.
-- `ARCHITECTURE.md`, `PLANS.md`, `docs/design-docs/core-beliefs.md`
+- `ARCHITECTURE.md`, `PLANS.md`(Phase 인덱스·상태), `docs/design-docs/core-beliefs.md`
+- 특정 Phase의 세부 태스크가 필요하면 `PLANS.md` 인덱스의 링크를 따라 `docs/exec-plans/phases/phaseNN.md`만 선택적으로 로드한다 (전체 전수 로드 금지).
 - `docs/evaluations/qa-reports/` (미해결 이슈)
-- `docs/exec-plans/active/` (진행 중 태스크)
+- `docs/exec-plans/active/` (진행 중 스프린트 태스크)
 
 ### 2. 역할별 태스크 분할·분배
 상위 태스크를 각 역할 단위로 쪼개 다음 파일을 **각각** 업데이트한다.

@@ -13,7 +13,8 @@
 |------|------|
 | 설계 철학·레이어 규칙 | `DESIGN.md` · `ARCHITECTURE.md` |
 | 기술 스택·환경 | `docs/design-docs/tech-stack.md` |
-| 로드맵·마일스톤 | `PLANS.md` |
+| 로드맵·마일스톤(인덱스) | `PLANS.md` |
+| Phase별 상세 실행 로그 | `docs/exec-plans/phases/phaseNN.md` |
 | 품질 등급·체크리스트 | `QUALITY_SCORE.md` · `BACKEND.md` · `FRONTEND.md` |
 | 신뢰성·보안 | `RELIABILITY.md` · `SECURITY.md` |
 | 제품 마인드셋 | `PRODUCT_SENSE.md` |
