@@ -30,9 +30,11 @@
 | `prompt-engineer` | LLM/시스템 프롬프트 설계·최적화 |
 | `skill-creator` | 새 스킬 생성·기존 스킬 개선/평가 |
 | `evaluate-harness` | 하네스 건강 지표 측정 및 진단 리포트 생성 |
+| `design-mockup` | 구현 전 자체완결 HTML 목업으로 UI/UX 선(先)확정 (산출: `docs/design-docs/mockups/`) |
 | `frontend-design` | 프로덕션급 UI 구현 가이드 |
 | `web-artifacts-builder` | React + Tailwind 기반 웹 아티팩트 제작 |
 | `webapp-testing` | Playwright 기반 웹앱 E2E 테스트 |
+| `webwright` | 웹 태스크를 code-as-action으로 자동화·검증 (Playwright/Firefox, 스크린샷 증거 + 재실행 스크립트) |
 | `mcp-builder` | 외부 서비스 연동용 MCP 서버 구축 |
 | `context7-mcp` | 라이브러리·프레임워크·API 문서를 Context7로 실시간 조회 |
 
@@ -46,6 +48,7 @@
 | `/master` | 신규 요구사항·기능 분석 및 기획 산출물(meeting-logs·cps·product-specs) 현행화 | PM |
 | `/coordinator` | 상위 태스크를 역할별 Handover 파일로 분배 | Coordinator |
 | `/architect` | 시스템 아키텍처 설계 및 기술 스택 관리 | Architect |
+| `/design` | 구현 전 디자인 목업 작성·UI/UX 확정 (frontend/backend 구현 선행 게이트) | Frontend/Design |
 | `/backend` | 백엔드 모듈/API 설계 및 비즈니스 로직 개발 | Backend Dev |
 | `/frontend` | 프론트엔드 UI/UX 구현 및 API 연동 | Frontend Dev |
 | `/devops` | 인프라 구성·CI/CD 구축·배포 자동화 | DevOps |

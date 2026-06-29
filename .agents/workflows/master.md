@@ -29,16 +29,22 @@ description: 신규 요구사항·기능 요청을 분석하여 기획 산출물
 - **제품 비전·핵심가치·데이터 모델 등 횡단 변경**: `.agents/docs/planning/product-specs/project-context.md`를 갱신한다 (전면 덮어쓰기 금지, 변경분만 반영하여 기존 누적 내용을 보존).
 - **[필수] 인덱스 등록**: 신규 스펙 문서를 추가했으면 `.agents/docs/planning/product-specs/index.md`의 "읽는 순서" 목록에 한 줄 등록하고, 관련 문서 간 상호 링크를 기재한다.
 
-### 5. 다운스트림 연결
+### 5. 로드맵 등록 (PLANS 인덱스 + phase 스텁) — [필수, 구현 작업 도출 시]
+신규 기능/프로젝트로 **구현 작업이 도출되면 기획 시점에 즉시 로드맵에 등록**하여 `product-specs`와 `PLANS`가 어긋나지 않게 한다. (순수 비전·원칙 변경 등 구현 태스크가 없으면 생략하고, 기존 Phase에 매핑되면 해당 행의 비고만 갱신한다.)
+- **PLANS.md 인덱스 행 추가**: 새 Phase 번호(또는 기존 Phase)에 1줄 목표·상태(🔵 기획 완료/예정)·기간(추정)·상세 링크를 Phase 인덱스 표에 추가한다.
+- **phase 스텁 생성 → `docs/exec-plans/phases/phaseNN.md`**: 목표·범위 요약·관련 `product-specs/<feature>.md`·`cps/` 링크·**제품 수준 수용 기준**을 기록하고, 구현 체크리스트는 architect가 채우도록 빈 자리(placeholder)만 둔다. **세부 구현 태스크·노트는 master가 작성하지 않는다**(architect Step 4 소관).
+
+### 6. 다운스트림 연결
 - 명세로부터 구현 태스크가 도출되면 `/coordinator` 호출을 권고(또는 트리거)하여 역할별 Handover(`handovers/to_*.md`)로 분배되도록 한다.
-- 로드맵 갱신은 `/architect` 단계에 위임한다 (master는 기획 산출물까지만 책임). architect는 상세를 `docs/exec-plans/phases/phaseNN.md`에 기록하고 `PLANS.md`는 인덱스(상태·링크)만 갱신한다.
+- **구현 상세 체크리스트·완료 기준·진행 상태**는 `/architect`가 위 phase 스텁(`phaseNN.md`)에 채우고 `PLANS.md` 인덱스 상태를 전이시킨다 (master는 로드맵 *등록*까지, architect는 *상세*까지 책임).
 
 ## Outputs
 - 캡처된 원시 로그 `planning/meeting-logs/YYYY-MM-DD_<topic>.md` (해당 시)
 - CPS 정의 `planning/cps/YYYY-MM-DD_<topic>.md`
 - 신규/갱신된 `planning/product-specs/<feature>.md` 또는 `project-context.md` + 등록된 `product-specs/index.md`
+- **로드맵 등록(구현 작업 도출 시)**: `PLANS.md` 인덱스 행 + `docs/exec-plans/phases/phaseNN.md` 스텁(목표·범위·수용 기준·스펙 링크)
 - 후속 `/coordinator` 분배를 위해 정돈된 기획 컨텍스트
 
 ## Rollback
-- 이번 회차에 **신규 생성**한 파일(meeting-logs·cps·신규 spec)은 삭제한다.
-- 기존 파일의 **수정분**은 형상 관리 버전에서 체크아웃(`git checkout <file>`)하여 복원한다.
+- 이번 회차에 **신규 생성**한 파일(meeting-logs·cps·신규 spec·신규 `phaseNN.md` 스텁)은 삭제한다.
+- 기존 파일의 **수정분**(`product-specs/index.md`·`PLANS.md` 인덱스 행 등)은 형상 관리 버전에서 체크아웃(`git checkout <file>`)하여 복원한다.

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>[목업] 기능명 — FullOps-Squad</title>
+
+  <!-- Pretendard (한글 본문 가독성 우선, design-system-reference 권위) -->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <!-- Tailwind Play CDN (목업 전용 — 프로덕션은 Tailwind v4 @theme) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // 디자인 토큰 → Tailwind 색상 매핑.
+    // 권위: docs/references/design-system-reference-llms.txt / frontend/src/app.css @theme
+    // 목업에서 bg-primary, text-text-muted 등 프로덕션과 동일한 시맨틱 클래스를 쓴다.
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#0067B1', hover: '#00528E', soft: '#E7F1F9' },
+            accent: { DEFAULT: '#E2231A', soft: '#FCE9E7' },
+            secondary: '#5B6770',
+            bg: '#FFFFFF',
+            surface: { DEFAULT: '#F4F7FA', 2: '#EAF0F6' },
+            border: { DEFAULT: '#E1E8EF', strong: '#CBD5E0' },
+            text: { DEFAULT: '#14253A', muted: '#5B6770' },
+            success: { DEFAULT: '#1A9E5A', soft: '#E6F5EC' },
+            warning: { DEFAULT: '#F2A900', soft: '#FDF3DC' },
+            error: { DEFAULT: '#E2231A', soft: '#FCE9E7' }
+          },
+          fontFamily: {
+            sans: ['Pretendard', 'IBM Plex Sans KR', 'system-ui', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* 반응형 검토 보조: 현재 브레이크포인트 배지 (목업 전용, 구현 시 제거) */
+    .bp-badge::after {
+      content: '≥1440 desktop';
+    }
+
+    @media (max-width: 1439px) {
+      .bp-badge::after {
+        content: '768–1439 tablet';
+      }
+    }
+
+    @media (max-width: 767px) {
+      .bp-badge::after {
+        content: '<768 mobile';
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-bg font-sans text-text antialiased">
+  <!-- ===== 헤더 (기존 화면과 일관: 흰 배경 + 블루 포인트) ===== -->
+  <header class="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-bg px-6 py-3">
+    <div class="h-7 w-7 rounded-md bg-primary"></div>
+    <span class="text-lg font-bold tracking-tight">AgentBuilder</span>
+    <span class="rounded-full bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary">목업</span>
+    <span
+      class="bp-badge ml-auto rounded-md border border-border bg-surface px-2 py-1 font-mono text-xs text-text-muted"></span>
+  </header>
+
+  <!-- ===== 본문: 여기에 목업을 작성한다 ===== -->
+  <main class="mx-auto max-w-5xl px-6 py-8">
+    <h1 class="text-2xl font-bold">기능명 목업</h1>
+    <p class="mt-1 text-sm text-text-muted">한 줄 요구사항 요약 · 관련 스펙: planning/product-specs/&lt;...&gt;</p>
+
+    <!-- 예시 카드 (삭제하고 실제 화면을 그린다) -->
+    <section class="mt-6 rounded-xl border border-border bg-surface p-5">
+      <h2 class="text-lg font-semibold">섹션 제목</h2>
+      <p class="mt-2 text-sm text-text-muted">카드/패널 패턴 예시. 카드는 surface, 경계는 border 토큰을 쓴다.</p>
+      <div class="mt-4 flex gap-2">
+        <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover">
+          Primary CTA
+        </button>
+        <button class="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text hover:bg-surface-2">
+          보조 액션
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== 상태별 UI (ui-ux-guidelines §3 — 모든 화면에서 처리) ===== -->
+    <section class="mt-8 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="text-xs font-semibold uppercase tracking-wide text-text-muted">Loading</div>
+        <div class="mt-3 space-y-2">
+          <div class="h-3 w-3/4 animate-pulse rounded bg-border"></div>
+          <div class="h-3 w-1/2 animate-pulse rounded bg-border"></div>
+        </div>
+      </div>
+      <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="text-xs font-semibold uppercase tracking-wide text-text-muted">Empty</div>
+        <p class="mt-3 text-sm text-text-muted">아직 항목이 없습니다.</p>
+        <button class="mt-3 text-sm font-medium text-primary hover:underline">+ 새로 만들기</button>
+      </div>
+      <div class="rounded-xl border border-error/30 bg-error-soft p-5">
+        <div class="text-xs font-semibold uppercase tracking-wide text-error">Error</div>
+        <p class="mt-3 text-sm text-text">불러오기에 실패했습니다.</p>
+        <button class="mt-3 text-sm font-medium text-error hover:underline">다시 시도</button>
+      </div>
+      <div class="rounded-xl border border-success/30 bg-success-soft p-5">
+        <div class="text-xs font-semibold uppercase tracking-wide text-success">Success</div>
+        <p class="mt-3 text-sm text-text">저장되었습니다.</p>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>
