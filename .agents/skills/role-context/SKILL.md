@@ -25,13 +25,28 @@ description: 에이전트의 지식 관리 및 활용을 설명합니다. 작업
 
 ### 3. 작성 규칙 (Writing Rules)
 - 모든 기록은 **발생 시점**을 명확히 하기 위해 타임스탬프를 포함해야 합니다.
-- **작성 포맷:** `- [YYYY-MM-DD HH:mm:ss] 내용`
+- **작성 포맷:** `- [YYYY-MM-DD HH:mm:ss] 내용` — 한 항목은 **3줄 이내**, 상세는 phase 로그에 쓰고 링크.
 - **예시:**
   - `[2025-12-26 17:20:45] API 응답 포맷을 {data, meta} 구조로 통일하기로 결정함.`
   - `[2025-12-27 10:15:30] User 모델의 email 필드에 unique 인덱스 추가함.`
+
+### 4. 지식의 압축 (Compact)
+
+활성 컨텍스트 파일이 **본문 150줄 또는 10KB**를 초과하면 다음 절차로 압축합니다 (지식 유실 방지를 위해 삭제가 아닌 아카이브 이동).
+
+1. 현재 파일 전문을 `contexts/archive/<role>_YYYY-MM.md`에 **append** (이미 있으면 하단에 이어 붙임).
+2. 활성 파일을 재작성:
+   - **Core Principles**: 전부 유지.
+   - **Learned Patterns / Anti-Patterns**: 여전히 유효한 것만 유지하고 각 3줄 이내로 재요약.
+   - **Decision History**: 현재 코드·설계에 영향을 주는 결정만 1~2줄로 요약 (상세는 아카이브·`phaseNN.md` 링크).
+   - **Current Knowledge**: 현재 유효한 스냅샷만 유지, 취소선 항목은 제거.
+3. 활성 파일 헤더에 `> **Archive**: contexts/archive/<role>_YYYY-MM.md` 링크를 남깁니다.
+4. 압축 후에도 원문이 필요한 과거 맥락 질의는 아카이브 파일을 선택적으로 로드해 해결합니다 (평상시 로드 금지).
 
 ## Related Files
 
 | File | Purpose |
 |------|---------|
 | `.agents/contexts/*.md` | 역할(Role)별 누적된 개발 지식 및 맥락 보관 |
+| `.agents/contexts/archive/*.md` | 압축 시 이동된 과거 원문 이력 (필요 시에만 로드) |
+| `.agents/contexts/_TEMPLATE.md` | 섹션 구조·Writing Rules·파일 예산 정의 |

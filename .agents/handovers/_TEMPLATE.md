@@ -35,8 +35,4 @@ YYYY-MM-DD
 
 ---
 
-## 완료 후 처리 절차 (`handover` 스킬과 동일)
-
-1. 내용을 `handovers/logs/YYYY-MM-DD_to_<role>.md`에 append.
-2. 본 파일(`to_<role>.md`)을 비워 다음 롤링 대기 상태로 전환.
-3. `contexts/<role>.md` 업데이트.
+> **완료 후 처리**: `skills/handover/SKILL.md`의 절차를 따른다 (logs로 append → 원본 비움 → contexts 갱신).

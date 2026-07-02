@@ -98,3 +98,5 @@
 > **Scoring Timing**: At sprint end or before major PR merges
 > **Scorer**: QA agent or Coordinator agent
 > **Results Recorded In**: `docs/evaluations/qa-reports/`
+>
+> **측정 불가 항목 처리**: 도구/환경 제약으로 측정할 수 없는 항목(커버리지·Lighthouse·부하 테스트 등)은 점수를 추정하지 말고 **N/A + 사유**로 표기하며, 해당 항목의 가중치는 총점 계산에서 제외한다. 실행하지 않은 측정을 수치로 보고하는 것은 금지 (검증 사다리: `workflows/_README.md`).

@@ -35,7 +35,9 @@
 1. 작업 시작 전 이 문서를 먼저 읽고, 관련 경로만 탐색한다 (불필요한 문서 전수 로드 금지).
 2. `ARCHITECTURE.md`의 레이어 의존 방향은 **절대 위반 금지**.
 3. 모든 코드 변경은 `rules/linter-rules.md` 통과가 필수다. 위반 시 `rules/correction-guides.md`에 따라 교정한다.
-4. 작업 완료 후 **반드시** `contexts/<role>.md`에 결정·교훈을 append하고, Handover는 `handovers/logs/`로 아카이빙한다.
+4. 작업 완료 후 **반드시** `contexts/<role>.md`에 결정·교훈을 append하고, Handover는 `handovers/logs/`로 아카이빙한다. 컨텍스트 항목은 **3줄 이내**로 요약하고 상세는 `docs/exec-plans/phases/phaseNN.md`에 쓰고 링크한다.
 5. **언어**: 모든 응답·문서·코드 주석은 **한국어**로 작성한다. 단, 영문 구조 키워드(ARCHITECTURE, Preconditions 등)와 식별자는 유지한다.
+6. **문서 충돌 우선순위**: `SECURITY.md`·`ARCHITECTURE.md` > `rules/` > 역할 기준 문서(`BACKEND.md`·`FRONTEND.md`·`QUALITY_SCORE.md`) > `workflows/` > `contexts/`·`handovers/`. 하위 문서가 상위와 충돌하면 상위를 따르고, 충돌 사실을 handover에 기록한다.
+7. **실패 처리 3원칙**: ① 참조된 문서/파일이 없으면 추측으로 대체하지 말고 부재를 보고하고 범위를 줄인다. ② 검증 도구를 실행할 수 없으면(폐쇄망·PyPI 차단 등) `workflows/_README.md`의 **검증 사다리**에 따라 정적 검증으로 대체하고 "실행 불가"를 명시한다 — 실행한 것처럼 보고 금지. ③ 동일 오류가 2회 반복되면 같은 시도를 반복하지 말고 접근을 바꾸거나 중단·보고한다.
 
 > 이 문서는 100줄 이내 인덱스 맵이다. 세부 내용은 반드시 링크된 문서를 따른다.

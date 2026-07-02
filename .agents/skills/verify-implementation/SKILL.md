@@ -25,12 +25,12 @@ argument-hint: "[선택사항: 특정 verify 스킬 이름]"
 
 ## 실행 대상 스킬
 
-이 스킬이 순차 실행하는 검증 스킬 목록입니다. `/manage-skills`가 스킬을 생성/삭제할 때 이 목록을 자동 업데이트합니다.
+이 스킬이 순차 실행하는 검증 스킬 목록입니다. `/manage-skills`가 스킬을 생성/삭제할 때 이 목록을 자동 업데이트합니다. (스킬 이름은 `skills/<name>/` 디렉토리명과 정확히 일치해야 한다.)
 
 | # | 스킬 | 설명 |
 |---|------|------|
-| 1 | `verify-backend-style` | 백엔드 코드 스타일 검증 (FastAPI + SQLModel) |
-| 2 | `verify-frontend-style` | 프론트엔드 API 호출 양식 검증 (Svelte + FastAPI Client) |
+| 1 | `backend-style` | 백엔드 코드 스타일 검증 (FastAPI + SQLModel) |
+| 2 | `frontend-style` | 프론트엔드 API 호출 양식 검증 (Svelte + FastAPI Client) |
 | 3 | `verify-linter-rules` | linter-rules.md에 정의된 기계적 린터 규칙 검증 |
 
 <!-- 스킬이 추가되면 아래 형식으로 등록:
@@ -80,7 +80,7 @@ argument-hint: "[선택사항: 특정 verify 스킬 이름]"
 
 #### 2a. 스킬 SKILL.md 읽기
 
-해당 스킬의 `.agents/skills/verify-<name>/SKILL.md`를 읽고 다음 섹션을 파싱합니다:
+해당 스킬의 `.agents/skills/<name>/SKILL.md`(위 테이블의 스킬 이름 그대로)를 읽고 다음 섹션을 파싱합니다:
 
 - **Workflow** — 실행할 검사 단계와 탐지 명령어
 - **Exceptions** — 위반이 아닌 것으로 간주되는 패턴
@@ -231,7 +231,7 @@ X개 수정 완료.
 1. **등록된 스킬이 없는 프로젝트** — 오류가 아닌 안내 메시지를 표시하고 종료
 2. **스킬의 자체적 예외** — 각 verify 스킬의 Exceptions 섹션에 정의된 패턴은 이슈로 보고하지 않음
 3. **verify-implementation 자체** — 실행 대상 스킬 목록에 자기 자신을 포함하지 않음
-4. **manage-skills** — `verify-`로 시작하지 않으므로 실행 대상에 포함되지 않음
+4. **실행 대상은 위 테이블에 등록된 스킬만** — 이름 접두사(`verify-`)가 아니라 테이블 등록 여부가 기준
 
 ## Related Files
 

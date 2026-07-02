@@ -15,7 +15,7 @@
 | `handover` | `to_<role>.md`의 모든 태스크 완료 시 | `handovers/to_*.md` → `handovers/logs/` |
 | `git-rules` | 커밋/Push/PR 생성 직전 | — |
 | `manage-skills` | 신규 스킬 생성·기존 스킬 동기화 시 | `skills/verify-*/SKILL.md` |
-| `verify-implementation` | 기능 구현 후·PR 전 통합 검증 | 전체 `verify-*` 스킬 오케스트레이션 |
+| `verify-implementation` | 기능 구현 후·PR 전 통합 검증 | `backend-style`·`frontend-style`·`verify-linter-rules` 순차 실행 |
 | `verify-linter-rules` | 코드 변경 후 기계적 린터 검증 | `backend/**/*.py`, `frontend/src/**` |
 | `backend-style` | 백엔드 로직 수정 후 (Models/Schemas/CRUD/Routes) | `backend/app/...` |
 | `frontend-style` | 프론트 구현·API 연동 후 (Runes/API 래퍼/Tailwind) | `frontend/src/...` |

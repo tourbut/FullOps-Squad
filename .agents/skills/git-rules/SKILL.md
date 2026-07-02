@@ -6,7 +6,7 @@ description: Git 커밋 메시지 및 브랜치 규칙 검증. 작업 내용을 
 # 커밋 및 브랜치 컨벤션 검증
 
 ## Purpose
-`git-rules.md`를 바탕으로 프로젝트의 Git 커밋 메시지 컨벤션(Conventional Commits)과 브랜치 전략(main, develop)이 충실하게 적용되었는지 검사합니다.
+`rules/linter-rules.md` §5 커밋 규칙을 바탕으로 프로젝트의 Git 커밋 메시지 컨벤션(Conventional Commits)과 브랜치 전략(main, develop)이 충실하게 적용되었는지 검사합니다.
 
 1. **Branch 보호**: 허용된 브랜치 구조에서 작업 중인지 점검 (1인 체계: `develop` 중심 개발, 배포 시 `main` 머지)
 2. **Commit Message 규격**: `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `style:` 등 정해진 타입으로 시작하는지 최근 커밋 내역을 검증합니다.
@@ -34,8 +34,8 @@ echo "Current Branch: $current_branch"
 git log -5 --pretty=format:"%h - %s"
 ```
 
-터미널에서 가져온 Git 커밋 메시지가 다음의 정규식 구조를 만족하는지 분석하세요.
-- 패턴: `^(feat|fix|docs|style|refactor|chore)(\([a-z0-9_\-]+\))?:\s[a-zA-Z0-9가-힣\s]+`
+터미널에서 가져온 Git 커밋 메시지가 다음의 정규식 구조를 만족하는지 분석하세요 (Merge 커밋은 SKIP).
+- 패턴: `^(feat|fix|docs|style|refactor|chore|test)(\([a-z0-9_\-]+\))?: .+`
 - 예시: `feat: 로그인 화면 분리`, `fix: 자산 가치 계산 오류 수정`
 
 ### Step 3: 자동화 스크립트 실행 (Optional)
